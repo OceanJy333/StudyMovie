@@ -1,6 +1,6 @@
-# nas-movie-cli
+# StudyMovie
 
-**nas-movie-cli 是一个自托管的命令行工具，把家里的 NAS 变成自动更新的 JAV 片库。** 你在浏览器里收藏演员页，它每天去 JavDB 找这些演员的新作，把最合适的磁力交给 NAS 上的迅雷下载，下完后把文件统一命名成 `发行日期 番号 演员.ext`，再在局域网里提供一面影片墙，显示已有和缺少的作品。它也能订阅电视剧和番剧，下完按 `剧名/Season 01/` 归档。
+**StudyMovie 是一个自托管的命令行工具，把家里的 NAS 变成自动更新的 JAV 片库。** 你在浏览器里收藏演员页，它每天去 JavDB 找这些演员的新作，把最合适的磁力交给 NAS 上的迅雷下载，下完后把文件统一命名成 `发行日期 番号 演员.ext`，再在局域网里提供一面影片墙，显示已有和缺少的作品。它也能订阅电视剧和番剧，下完按 `剧名/Season 01/` 归档。
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
@@ -9,7 +9,7 @@
 ![Tests](https://img.shields.io/badge/tests-77%20passing-2f7d4f)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
-<p align="center"><img src="docs/architecture.svg" alt="架构：书签、JavDB App 接口、javdb.com 影片页和 sukebei 为 NAS 上的 nas-movie 提供数据，nas-movie 驱动迅雷、整理片库并提供影片墙" width="100%"></p>
+<p align="center"><img src="docs/architecture.svg" alt="架构：书签、JavDB App 接口、javdb.com 影片页和 sukebei 为 NAS 上的 StudyMovie 提供数据，StudyMovie 驱动迅雷、整理片库并提供影片墙" width="100%"></p>
 
 ## 一览
 
@@ -26,7 +26,7 @@
 
 ## 为什么做这个？
 
-手动跟 60 多位演员，意味着要逐个看主页、找磁力、开下载、改文件名。nas-movie-cli 每天 18:00 做这件事，数据源变了也能继续工作：2026 年 11 月 JavDB 把搜索、详情和磁力接口都改成要登录，工具换成了不需要账号的接口和网页；现在只要有数据源失败，任务就以非零状态退出，不会再"成功"地什么都没下。
+手动跟 60 多位演员，意味着要逐个看主页、找磁力、开下载、改文件名。StudyMovie 每天 18:00 做这件事，数据源变了也能继续工作：2026 年 11 月 JavDB 把搜索、详情和磁力接口都改成要登录，工具换成了不需要账号的接口和网页；现在只要有数据源失败，任务就以非零状态退出，不会再"成功"地什么都没下。
 
 ## 功能
 
@@ -62,17 +62,17 @@ JavDB id 优先用本地作品目录里记过的；没有时按番号差在同�
 
 ## 交给 AI agent 用
 
-nas-movie 自带一个 [agent skill](skills/nas-movie/SKILL.md)。把下面这句话发给 Claude Code、Codex、Cursor 或其他编程 agent：
+StudyMovie 自带一个 [agent skill](skills/studymovie/SKILL.md)。把下面这句话发给 Claude Code、Codex、Cursor 或其他编程 agent：
 
-> 从 https://github.com/OceanJy333/nas-movie-cli 安装 nas-movie-cli：按 skills/nas-movie/SKILL.md 操作，最后运行 `nas-movie doctor`。
+> 从 https://github.com/OceanJy333/StudyMovie 安装 StudyMovie：按 skills/studymovie/SKILL.md 操作，最后运行 `studymovie doctor`。
 
 想让 agent 长期带着这个 skill，可以用开源的 [skills](https://github.com/vercel-labs/skills) 安装器添加：
 
 ```bash
-npx skills add OceanJy333/nas-movie-cli
+npx skills add OceanJy333/StudyMovie
 ```
 
-agent 会把 CLI 装到本机（`npm install -g github:OceanJy333/nas-movie-cli`），向你要 NAS 和迅雷的设置，再把"下载 ABC-123""NAS 在下什么"这类请求翻成命令。它总是先给出计划，再加 `--apply` 执行。
+agent 会把 CLI 装到本机（`npm install -g --install-links github:OceanJy333/StudyMovie`），向你要 NAS 和迅雷的设置，再把"下载 ABC-123""NAS 在下什么"这类请求翻成命令。它总是先给出计划，再加 `--apply` 执行。
 
 ## 快速开始
 
@@ -86,8 +86,8 @@ agent 会把 CLI 装到本机（`npm install -g github:OceanJy333/nas-movie-cli`
 ### 在电脑上安装 CLI
 
 ```bash
-npm install -g github:OceanJy333/nas-movie-cli
-nas-movie --help
+npm install -g --install-links github:OceanJy333/StudyMovie
+studymovie --help
 ```
 
 CLI 通过 SSH 连 NAS，不装定时任务也能在笔记本上直接用。
@@ -95,8 +95,8 @@ CLI 通过 SSH 连 NAS，不装定时任务也能在笔记本上直接用。
 ### 从源码安装并部署定时任务
 
 ```bash
-git clone https://github.com/OceanJy333/nas-movie-cli.git
-cd nas-movie-cli
+git clone https://github.com/OceanJy333/StudyMovie.git
+cd StudyMovie
 npm install
 npm test
 ```
@@ -177,7 +177,7 @@ CLI 在任何装了 Node.js 的机器上都能跑，但下载依赖 NAS 版迅�
 
 ### 和元数据刮削工具有什么不同？
 
-| | 元数据刮削工具 | nas-movie-cli |
+| | 元数据刮削工具 | StudyMovie |
 |---|---|---|
 | 发现关注演员的新作 | 否 | 是，每天 |
 | 发起下载 | 否 | 是，通过迅雷 |

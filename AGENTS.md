@@ -1,20 +1,20 @@
 # Agent guide
 
-## Installing nas-movie for a user
+## Installing studymovie for a user
 
-Follow [`skills/nas-movie/SKILL.md`](skills/nas-movie/SKILL.md). In short:
+Follow [`skills/studymovie/SKILL.md`](skills/studymovie/SKILL.md). In short:
 
-1. Run `npm install -g github:OceanJy333/nas-movie-cli`.
+1. Run `npm install -g --install-links github:OceanJy333/StudyMovie`.
 2. Write `~/.config/nas-movie/config.json` and `~/.config/nas-movie/env` from the example files, using values the user gives you.
-3. Run `nas-movie doctor`.
+3. Run `studymovie doctor`.
 
 To give a coding agent the skill permanently, run:
 
 ```bash
-npx skills add OceanJy333/nas-movie-cli
+npx skills add OceanJy333/StudyMovie
 ```
 
-Or copy `skills/nas-movie/` into the agent's skills folder, for example `~/.claude/skills/nas-movie/`.
+Or copy `skills/studymovie/` into the agent's skills folder, for example `~/.claude/skills/studymovie/`.
 
 ## Working on this repository
 

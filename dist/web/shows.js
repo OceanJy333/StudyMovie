@@ -74,7 +74,7 @@ export function renderShows(items, subscriptions, meta) {
 <div class="subs">${subscriptions.map(subscription => `<span>${esc(subscription.name)}${subscription.season ? ` S${subscription.season}` : ''} · ${subscription.kind === 'anime' ? '番剧' : '剧集'}</span>`).join('')}</div>
 <div id="grid">
 ${items.length + pending.length === 0 ? `<p class="hint">还没有剧集订阅。在 Mac 上运行
-  <code>nas-movie shows add 幕府将军 --query Shogun --season 1</code>，再 <code>./deploy-nas.sh</code> 同步到 NAS。
+  <code>studymovie shows add 幕府将军 --query Shogun --season 1</code>，再 <code>./deploy-nas.sh</code> 同步到 NAS。
   每天 04:00 会自动检查新集，也可以手动 <code>shows check --apply</code>。</p>` : ''}
 ${items.map(card).join('\n')}
 ${pending.map(item => `<a class="card show" href="/shows?name=${encodeURIComponent(item.name)}">

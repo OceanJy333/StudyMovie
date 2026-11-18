@@ -1,4 +1,4 @@
-# nas-movie-cli
+# StudyMovie
 
 > Self-hosted TypeScript CLI that turns a home NAS into an automatic JAV library: follows bookmarked actresses on JavDB, sends the best magnet to the NAS's Thunder (迅雷) downloader, renames finished files to "YYYY-MM-DD CODE Actress.ext" and serves a LAN library wall. Also subscribes to TV series and anime. MIT licensed.
 
@@ -9,11 +9,11 @@
 - Naming: all female cast, up to 4 names joined with 、 then 等; unknown names re-checked from cache every run.
 - Failure policy: any source or submission failure exits with code 1.
 
-- Agent install: `npm install -g github:OceanJy333/nas-movie-cli`, or `npx skills add OceanJy333/nas-movie-cli` for the skill; every command prints JSON and needs `--apply` to change anything.
+- Agent install: `npm install -g --install-links github:OceanJy333/StudyMovie`, or `npx skills add OceanJy333/StudyMovie` for the skill; every command prints JSON and needs `--apply` to change anything.
 
 ## Docs
 
-- [Agent skill](skills/nas-movie/SKILL.md): install, configure and command mapping for AI agents
+- [Agent skill](skills/studymovie/SKILL.md): install, configure and command mapping for AI agents
 
 - [README (English)](README.md): features, quick start, commands, configuration, FAQ
 - [README (简体中文)](README.zh-CN.md)

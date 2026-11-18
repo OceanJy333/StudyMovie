@@ -1,6 +1,6 @@
-# nas-movie-cli
+# StudyMovie
 
-**nas-movie-cli is a self-hosted command-line tool that turns a home NAS into an automatic JAV library.** It follows the actresses you bookmark, finds their new releases on JavDB, sends the best magnet to the NAS's Thunder (迅雷) downloader, renames every finished file to `YYYY-MM-DD CODE Actress.ext`, and serves a LAN web wall of what you have and what you are missing. It also subscribes to TV series and anime and files episodes into `Show/Season 01/`.
+**StudyMovie is a self-hosted command-line tool that turns a home NAS into an automatic JAV library.** It follows the actresses you bookmark, finds their new releases on JavDB, sends the best magnet to the NAS's Thunder (迅雷) downloader, renames every finished file to `YYYY-MM-DD CODE Actress.ext`, and serves a LAN web wall of what you have and what you are missing. It also subscribes to TV series and anime and files episodes into `Show/Season 01/`.
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
@@ -10,7 +10,7 @@
 ![Tests](https://img.shields.io/badge/tests-77%20passing-2f7d4f)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
-<p align="center"><img src="docs/architecture.svg" alt="Architecture: bookmarks, JavDB API, javdb.com pages and sukebei feed nas-movie on the NAS, which drives Thunder, organizes the library and serves a web wall" width="100%"></p>
+<p align="center"><img src="docs/architecture.svg" alt="Architecture: bookmarks, JavDB API, javdb.com pages and sukebei feed studymovie on the NAS, which drives Thunder, organizes the library and serves a web wall" width="100%"></p>
 
 ## At a glance
 
@@ -27,7 +27,7 @@
 
 ## Why does it exist?
 
-Following 60+ actresses by hand means checking every profile, finding a magnet, starting a download and renaming the file. nas-movie-cli does that every day at 18:00 and keeps doing it when sources change: when JavDB put its search, detail and magnet endpoints behind login in November 2026, the tool switched to endpoints and pages that need no account, and it now exits non-zero when a source fails instead of reporting a silent "success".
+Following 60+ actresses by hand means checking every profile, finding a magnet, starting a download and renaming the file. StudyMovie does that every day at 18:00 and keeps doing it when sources change: when JavDB put its search, detail and magnet endpoints behind login in November 2026, the tool switched to endpoints and pages that need no account, and it now exits non-zero when a source fails instead of reporting a silent "success".
 
 ## Features
 
@@ -63,17 +63,17 @@ The JavDB id comes from the local catalog when it is known; otherwise the tool j
 
 ## Use it from an AI agent
 
-nas-movie ships an [agent skill](skills/nas-movie/SKILL.md). Paste this into Claude Code, Codex, Cursor or any other coding agent:
+StudyMovie ships an [agent skill](skills/studymovie/SKILL.md). Paste this into Claude Code, Codex, Cursor or any other coding agent:
 
-> Install nas-movie-cli from https://github.com/OceanJy333/nas-movie-cli: follow skills/nas-movie/SKILL.md, then run `nas-movie doctor`.
+> Install StudyMovie from https://github.com/OceanJy333/StudyMovie: follow skills/studymovie/SKILL.md, then run `studymovie doctor`.
 
 To give the agent the skill permanently, add it with the open [skills](https://github.com/vercel-labs/skills) installer:
 
 ```bash
-npx skills add OceanJy333/nas-movie-cli
+npx skills add OceanJy333/StudyMovie
 ```
 
-The agent then installs the CLI locally (`npm install -g github:OceanJy333/nas-movie-cli`), asks you for the NAS and Thunder settings, and maps requests such as "download ABC-123" or "what is the NAS downloading?" to commands. It always shows the plan before it adds `--apply`.
+The agent then installs the CLI locally (`npm install -g --install-links github:OceanJy333/StudyMovie`), asks you for the NAS and Thunder settings, and maps requests such as "download ABC-123" or "what is the NAS downloading?" to commands. It always shows the plan before it adds `--apply`.
 
 ## Quick start
 
@@ -87,8 +87,8 @@ The agent then installs the CLI locally (`npm install -g github:OceanJy333/nas-m
 ### Install the CLI on your computer
 
 ```bash
-npm install -g github:OceanJy333/nas-movie-cli
-nas-movie --help
+npm install -g --install-links github:OceanJy333/StudyMovie
+studymovie --help
 ```
 
 The CLI talks to the NAS over SSH, so you can use it from a laptop without the timers.
@@ -96,8 +96,8 @@ The CLI talks to the NAS over SSH, so you can use it from a laptop without the t
 ### Install from source and deploy the timers
 
 ```bash
-git clone https://github.com/OceanJy333/nas-movie-cli.git
-cd nas-movie-cli
+git clone https://github.com/OceanJy333/StudyMovie.git
+cd StudyMovie
 npm install
 npm test
 ```
@@ -156,7 +156,7 @@ State files (roster, download ledger, metadata cache, rename log) live under `~/
 
 ## FAQ
 
-### Does nas-movie-cli need a JavDB account?
+### Does StudyMovie need a JavDB account?
 
 No. It uses JavDB app endpoints that are still public (actor filmographies, maker and code lists, actor profiles) and the public javdb.com movie page for cast and magnets. Logging in was rejected on purpose: tokens expire and would become a new single point of failure.
 
@@ -178,7 +178,7 @@ The CLI runs anywhere with Node.js, but downloading relies on the Thunder NAS AP
 
 ### How is it different from metadata scrapers?
 
-| | Metadata scrapers | nas-movie-cli |
+| | Metadata scrapers | StudyMovie |
 |---|---|---|
 | Finds new releases of followed actresses | No | Yes, daily |
 | Starts downloads | No | Yes, through Thunder |

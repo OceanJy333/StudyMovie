@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// input: CLI commands; output: JSON results; pos: nas-movie entry point.
+// input: CLI commands; output: JSON results; pos: studymovie entry point.
 import { parseArgs } from 'node:util';
 import { writeFile } from 'node:fs/promises';
 import { configPath, readConfig, type Config } from './config.ts';
@@ -28,7 +28,7 @@ import { pushShowsConfig, runRemoteShows } from './shows/remote.ts';
 import { syncCatalog } from './catalog/sync.ts';
 import { decimal, flag, integer, list, oneOf, requiredArg, text, yearArg, UsageError, type Values } from './cli/args.ts';
 
-const help = `nas-movie — NAS Jackett 搜索 → NAS 迅雷（SSH）
+const help = `studymovie — NAS Jackett 搜索 → NAS 迅雷（SSH）
 
 search <英文片名> [--year 2020]             搜索资源
 resources <英文片名> --year 2020 [--dv]     按做种、画质、体积综合排序 4K 候选

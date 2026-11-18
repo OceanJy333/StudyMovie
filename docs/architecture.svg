@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 948 536" width="948" height="536" role="img" aria-labelledby="architecture-title architecture-desc">
-<title id="architecture-title">How nas-movie fits together</title>
-<desc id="architecture-desc">Bookmarks, the JavDB API, javdb.com pages and sukebei feed nas-movie on the NAS, which submits to Thunder, renames files into a flat library and serves a library wall.</desc>
+<title id="architecture-title">How StudyMovie fits together</title>
+<desc id="architecture-desc">Bookmarks, the JavDB API, javdb.com pages and sukebei feed StudyMovie on the NAS, which submits to Thunder, renames files into a flat library and serves a library wall.</desc>
 <defs>
   <marker id="architecturea" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="muted"/></marker>
   <marker id="architectureb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="acc"/></marker>
@@ -25,7 +25,7 @@
   }
 </style>
 <rect class="bg" width="948" height="536" rx="12"/>
-<text class="mono e soft" x="32" y="40">OVERVIEW</text><text class="t ink" x="32" y="70">How nas-movie fits together</text>
+<text class="mono e soft" x="32" y="40">OVERVIEW</text><text class="t ink" x="32" y="70">How StudyMovie fits together</text>
 <path class="line" d="M252 128 H332 Q340 128 340 136 V218 Q340 226 348 226 H366" marker-end="url(#architecturea)"/>
 <path class="line" d="M252 224 H296 Q304 224 304 232 V250 Q304 258 312 258 H366" marker-end="url(#architecturea)"/>
 <path class="aline" d="M252 320 H296 Q304 320 304 312 V298 Q304 290 312 290 H366" marker-end="url(#architectureb)"/>
@@ -61,7 +61,7 @@
 <rect class="focal" x="372" y="196" width="216" height="156" rx="6"/>
 <rect class="tagacc" x="384" y="206" width="113" height="16" rx="2"/>
 <text class="mono e acc" x="388" y="218">RUNS ON THE NAS</text>
-<text class="n ink" x="384" y="242">nas-movie</text>
+<text class="n ink" x="384" y="242">StudyMovie</text>
 <text class="mono s soft" x="384" y="260">teachers auto · 18:00</text>
 <text class="mono s soft" x="384" y="276">organize · 15:00</text>
 <text class="mono s soft" x="384" y="292">catalog · 03:00</text>

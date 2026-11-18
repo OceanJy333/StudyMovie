@@ -77,7 +77,7 @@ def title(x, y, eyebrow, text):
 
 def architecture():
     s = 'architecture'
-    b = [title(32, 40, 'OVERVIEW', 'How nas-movie fits together')]
+    b = [title(32, 40, 'OVERVIEW', 'How StudyMovie fits together')]
     # source → core connectors (drawn first, behind boxes)
     b += [path('M252 128 H332 Q340 128 340 136 V218 Q340 226 348 226 H366', s),
           path('M252 224 H296 Q304 224 304 232 V250 Q304 258 312 258 H366', s),
@@ -93,7 +93,7 @@ def architecture():
           node(32, 192, 220, 64, 'JavDB App API', 'filmographies by actor id', 'WORKS'),
           node(32, 288, 220, 64, 'javdb.com movie page', 'actresses + magnets', 'METADATA'),
           node(32, 384, 220, 64, 'sukebei RSS', 'fallback magnets by code', 'FALLBACK')]
-    b += [node(372, 196, 216, 156, 'nas-movie', ['teachers auto · 18:00', 'organize · 15:00', 'catalog · 03:00', 'web · :8850'],
+    b += [node(372, 196, 216, 156, 'StudyMovie', ['teachers auto · 18:00', 'organize · 15:00', 'catalog · 03:00', 'web · :8850'],
                'RUNS ON THE NAS', kind='focal')]
     b += [node(680, 128, 236, 60, 'Thunder (迅雷)', 'NAS download engine', 'DOWNLOAD'),
           node(680, 256, 236, 60, 'Flat library', 'date · code · actress.mp4', 'FILES'),
@@ -102,8 +102,8 @@ def architecture():
           '<rect class="focal" x="32" y="504" width="14" height="10" rx="2"/><text class="mono e muted" x="54" y="513">RUNS ON NAS</text>',
           '<line class="aline" x1="170" y1="509" x2="200" y2="509"/><text class="mono e muted" x="208" y="513">PRIMARY PATH</text>',
           '<line class="line dash" x1="330" y1="509" x2="360" y2="509"/><text class="mono e muted" x="368" y="513">FALLBACK</text>']
-    return svg(s, 948, 536, 'How nas-movie fits together',
-               'Bookmarks, the JavDB API, javdb.com pages and sukebei feed nas-movie on the NAS, which submits to Thunder, renames files into a flat library and serves a library wall.',
+    return svg(s, 948, 536, 'How StudyMovie fits together',
+               'Bookmarks, the JavDB API, javdb.com pages and sukebei feed StudyMovie on the NAS, which submits to Thunder, renames files into a flat library and serves a library wall.',
                '\n'.join(b))
 
 
@@ -131,7 +131,7 @@ def schedule():
         b.append(f'<text class="n {"acc" if focal else "ink"}" x="{cx}" y="{ty}" text-anchor="middle">{name}</text>'
                  f'<text class="mono s soft" x="{cx}" y="{ty + 16}" text-anchor="middle">{sub}</text>')
     b.append(f'<text class="mono s soft" x="32" y="{y + 104}">Plus a resident library wall on :8850.</text>')
-    return svg(s, 948, 282, 'nas-movie daily schedule',
+    return svg(s, 948, 282, 'StudyMovie daily schedule',
                'Timers run catalog at 03:00, show checks at 04:00, show archiving at 08:00 and 20:00, library organizing at 15:00 and teacher downloads at 18:00.',
                '\n'.join(b))
 
@@ -156,7 +156,7 @@ def magnets():
     b += ['<line class="rule" x1="32" y1="350" x2="1008" y2="350"/>',
           '<text class="mono s soft" x="32" y="376">Schedule: from 1 day before release, daily for 14 days, then weekly. Unreleased works are not queried.</text>']
     return svg(s, 1040, 400, 'Magnet lookup with two sources',
-               'For each due work nas-movie reads magnets from the javdb.com movie page and falls back to sukebei; unreleased or recently checked works are skipped.',
+               'For each due work StudyMovie reads magnets from the javdb.com movie page and falls back to sukebei; unreleased or recently checked works are skipped.',
                '\n'.join(b))
 
 

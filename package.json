@@ -1,5 +1,5 @@
 {
-  "name": "nas-movie-cli",
+  "name": "studymovie",
   "version": "1.0.0",
   "description": "Self-hosted JAV auto-downloader and library organizer for a home NAS: follows your favorite actresses on JavDB, pulls new releases into Thunder, renames files to \"date code actress\" and serves a LAN library wall.",
   "keywords": [
@@ -21,9 +21,9 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/OceanJy333/nas-movie-cli.git"
+    "url": "https://github.com/OceanJy333/StudyMovie.git"
   },
-  "homepage": "https://github.com/OceanJy333/nas-movie-cli#readme",
+  "homepage": "https://github.com/OceanJy333/StudyMovie#readme",
   "engines": {
     "node": ">=18"
   },
@@ -44,6 +44,6 @@
     "cheerio": "^1.2.0"
   },
   "bin": {
-    "nas-movie": "dist/cli.js"
+    "studymovie": "dist/cli.js"
   }
 }

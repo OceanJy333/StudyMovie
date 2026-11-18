@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 400" width="1040" height="400" role="img" aria-labelledby="magnets-title magnets-desc">
 <title id="magnets-title">Magnet lookup with two sources</title>
-<desc id="magnets-desc">For each due work nas-movie reads magnets from the javdb.com movie page and falls back to sukebei; unreleased or recently checked works are skipped.</desc>
+<desc id="magnets-desc">For each due work StudyMovie reads magnets from the javdb.com movie page and falls back to sukebei; unreleased or recently checked works are skipped.</desc>
 <defs>
   <marker id="magnetsa" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="muted"/></marker>
   <marker id="magnetsb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="acc"/></marker>
