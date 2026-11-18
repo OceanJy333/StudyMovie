@@ -1,12 +1,13 @@
-// input: verified candidates, state ledger and Thunder config; output: new downloads; pos: daily automation.
+// input: verified candidates, state ledger and downloader config; output: new downloads; pos: daily automation.
 import type { Config } from './config.ts';
 import { stderrNote } from './core/log.ts';
 import { readJsonFile, writeJsonAtomic } from './core/json.ts';
 import { paths } from './core/paths.ts';
 import { multiNumbers, readCatalog } from './catalog/store.ts';
 import { windowCutoff } from './core/time.ts';
-import { Thunder, assertDownloadPath } from './thunder.ts';
-import { authExpiry, ensureThunderAuth } from './thunder-auth.ts';
+import { downloader } from './downloader.ts';
+import { assertDownloadPath } from './core/paths.ts';
+import { authExpiry } from './thunder-auth.ts';
 import { Javdb } from './javdb/client.ts';
 import { readRoster } from './teachers/bookmarks.ts';
 import { dedupePool, manualCandidates, performerPool, selectBackfill, selectUpdates, subscriptionPool } from './teachers/pool.ts';
@@ -35,7 +36,7 @@ export function writeState(state: AutoState, path = autoStatePath): Promise<void
 }
 
 export function tokenExpiry(config: Config): Date | null {
-  const expiry = authExpiry(config.thunder.headers['pan-auth'] || '');
+  const expiry = authExpiry(config.thunder?.headers['pan-auth'] || '');
   return expiry ? new Date(expiry) : null;
 }
 
@@ -63,11 +64,12 @@ export function freshCandidates(candidates: readonly Candidate[], state: AutoSta
 async function submitCandidates(
   picked: readonly Candidate[], to: string, config: Config, state: AutoState, statePath: string, at: string,
 ): Promise<AutoResult[]> {
-  const thunder = new Thunder(config);
+  const backend = downloader(config);
+  await backend.ready();
   const results: AutoResult[] = [];
   for (const candidate of picked) {
     try {
-      const result = await thunder.download(`magnet:?xt=urn:btih:${candidate.hash}`, to, false);
+      const result = await backend.download(`magnet:?xt=urn:btih:${candidate.hash}`, to, false);
       state.seen[candidate.number.toUpperCase()] = {
         hash: candidate.hash, date: candidate.date, source: candidate.source, at, action: result.action, taskId: result.task?.id,
       };
@@ -104,7 +106,6 @@ export async function runAuto(options: AutoOptions) {
         results: manual.candidates.map(candidate => ({ ...candidate, action: 'would-download' })) as AutoResult[],
       };
     }
-    await ensureThunderAuth(options.config);
     const results = await submitCandidates(manual.candidates, options.to, options.config, state, statePath, new Date().toISOString());
     const rejected = results.filter(result => result.action === 'error').map(result => result.number);
     return { apply: true, statePath, counts, failures: [...manual.failed, ...rejected], expiry: expiry?.toISOString() ?? null, cutoff: '手动指定', results };
@@ -135,7 +136,6 @@ export async function runAuto(options: AutoOptions) {
       results: picked.download.map(candidate => ({ ...candidate, action: 'would-download' })) as AutoResult[],
     };
   }
-  await ensureThunderAuth(options.config);
   const results = await submitCandidates(picked.download, options.to, options.config, state, statePath, new Date().toISOString());
   const rejected = results.filter(result => result.action === 'error').map(result => result.number);
   return { apply: true, statePath, counts, failures: [...failures, ...rejected], expiry: expiry?.toISOString() ?? null, cutoff, results };
@@ -145,7 +145,6 @@ export async function runAuto(options: AutoOptions) {
 export async function runBackfill(options: BackfillOptions) {
   if (!options.names.length) throw new Error('没有老师名册');
   assertDownloadPath(options.to);
-  if (options.apply) await ensureThunderAuth(options.config);
   const statePath = options.statePath || autoStatePath;
   const state = await readState(statePath);
   const client = new Javdb();

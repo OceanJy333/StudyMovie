@@ -4,11 +4,11 @@ import { mkdtemp, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 export function isLocal(config) {
-    return config.ssh.host === 'localhost' || config.ssh.host === '127.0.0.1';
+    return !config.ssh || config.ssh.host === 'localhost' || config.ssh.host === '127.0.0.1';
 }
 export async function ssh(config, command, input = '', timeoutMs = 65000) {
     // 同一份代码既能在 Mac 上通过 SSH 驱动 NAS，也能直接跑在 NAS 上（host=localhost，命令本机执行）。
-    const local = isLocal(config);
+    const local = isLocal(config), remote = config.ssh;
     const dir = local ? null : await mkdtemp(join(tmpdir(), 'nas-movie-'));
     const askpass = dir ? join(dir, 'askpass') : null;
     try {
@@ -16,13 +16,13 @@ export async function ssh(config, command, input = '', timeoutMs = 65000) {
             await writeFile(askpass, '#!/bin/sh\nprintf "%s\\n" "$NAS_MOVIE_SSH_PASSWORD"\n', { mode: 0o700 });
         const args = local ? ['-c', command] : ['-T', '-o', 'ConnectTimeout=10', '-o', 'StrictHostKeyChecking=yes',
             '-o', 'NumberOfPasswordPrompts=1', '-o', 'ServerAliveInterval=15',
-            ...(config.ssh.hostKeyAlias ? ['-o', `HostKeyAlias=${config.ssh.hostKeyAlias}`] : []),
-            ...(config.ssh.identityFile ? ['-i', config.ssh.identityFile, '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes'] : []),
-            '-p', String(config.ssh.port), `${config.ssh.user}@${config.ssh.host}`, command];
+            ...(remote.hostKeyAlias ? ['-o', `HostKeyAlias=${remote.hostKeyAlias}`] : []),
+            ...(remote.identityFile ? ['-i', remote.identityFile, '-o', 'IdentitiesOnly=yes', '-o', 'BatchMode=yes'] : []),
+            '-p', String(remote.port), `${remote.user}@${remote.host}`, command];
         return await new Promise((resolve, reject) => {
             const child = spawn(local ? 'sh' : 'ssh', args, { env: { ...process.env, ...(askpass ? { SSH_ASKPASS: askpass,
                         SSH_ASKPASS_REQUIRE: 'force', DISPLAY: ':0' } : {}),
-                    NAS_MOVIE_SSH_PASSWORD: process.env.NAS_MOVIE_SSH_PASSWORD || config.ssh.password || '' },
+                    NAS_MOVIE_SSH_PASSWORD: process.env.NAS_MOVIE_SSH_PASSWORD || config.ssh?.password || '' },
                 stdio: ['pipe', 'pipe', 'pipe'] });
             let stdout = '', stderr = '';
             const timer = setTimeout(() => { child.kill('SIGTERM'); reject(new Error(local ? '本机命令超时' : 'SSH 超时；写入操作请先查 status，勿直接重试')); }, timeoutMs);

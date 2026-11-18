@@ -5,7 +5,7 @@
 Follow [`skills/studymovie/SKILL.md`](skills/studymovie/SKILL.md). In short:
 
 1. Run `npm install -g --install-links github:OceanJy333/StudyMovie`.
-2. Write `~/.config/nas-movie/config.json` and `~/.config/nas-movie/env` from the example files, using values the user gives you.
+2. Ask whether downloads happen on this computer (aria2, needs `aria2c`; no `config.json`) or on a NAS with Thunder (write `~/.config/nas-movie/config.json` from the example). Put the library folder in `~/.config/nas-movie/env`.
 3. Run `studymovie doctor`.
 
 To give a coding agent the skill permanently, run:

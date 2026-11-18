@@ -1,8 +1,10 @@
 // input: magnets and NAS config; output: torrent preview and task status; pos: Thunder API adapter.
-import type { Config } from './config.ts';
+import { thunderConfig, type Config } from './config.ts';
+import type { Downloader, TaskSummary } from './downloader.ts';
 import { nasRequest } from './ssh.ts';
 import { infoHash } from './resources.ts';
-import { settings } from './core/paths.ts';
+import { assertDownloadPath, settings } from './core/paths.ts';
+import { ensureThunderAuth } from './thunder-auth.ts';
 import { mkdir, readFile, writeFile, unlink, rmdir } from 'node:fs/promises';
 import { dirname, join } from 'node:path';
 import { configPath } from './config.ts';
@@ -36,8 +38,8 @@ export function selectedFiles(root: TorrentFile) {
 export function taskBody(root: TorrentFile, magnet: string, config: Config, folderId: string, path: string) {
   const files = selectedFiles(root);
   return { type: 'user#download-url', name: root.name, file_name: root.name,
-    file_size: String(files.reduce((n, f) => n + f.size, 0)), space: config.thunder.space,
-    params: { target: config.thunder.space, url: magnet, total_file_count: String(root.file_count),
+    file_size: String(files.reduce((n, f) => n + f.size, 0)), space: thunderConfig(config).space,
+    params: { target: thunderConfig(config).space, url: magnet, total_file_count: String(root.file_count),
       // Thunder's UI encodes a single-file torrent with this range sentinel.
       parent_folder_id: folderId, parent_folder_path: path, sub_file_index: root.is_dir ? files.map(f => f.index).join(',') : '--1,',
       mime_type: '', file_id: '' } };
@@ -47,8 +49,8 @@ export function taskBody(root: TorrentFile, magnet: string, config: Config, fold
 // 这种时候整包提交：少下的风险为零，广告文件由 organize 清到回收目录。
 export function wholeTorrentBody(root: TorrentFile, magnet: string, config: Config, folderId: string, path: string) {
   return { type: 'user#download-url', name: root.name, file_name: root.name,
-    file_size: String(root.file_size), space: config.thunder.space,
-    params: { target: config.thunder.space, url: magnet, total_file_count: String(root.file_count),
+    file_size: String(root.file_size), space: thunderConfig(config).space,
+    params: { target: thunderConfig(config).space, url: magnet, total_file_count: String(root.file_count),
       parent_folder_id: folderId, parent_folder_path: path, sub_file_index: '--1,', mime_type: '', file_id: '' } };
 }
 
@@ -56,18 +58,14 @@ export interface Task {
   id: string; name: string; phase: string; file_size: string; progress?: number;
   params?: Record<string, string>; type: string;
 }
-export function summary(task: Task) {
+export function summary(task: Task): TaskSummary {
   const size = Number(task.file_size), downloaded = Number(task.params?.checked_size || 0);
-  return { id: task.id, name: task.name, phase: task.phase, hash: task.params?.info_hash,
+  return { id: task.id, name: task.name, phase: task.phase, done: task.phase === 'PHASE_TYPE_COMPLETE', hash: task.params?.info_hash,
     sizeBytes: size, downloadedBytes: downloaded,
     percent: size > 0 ? Number((downloaded / size * 100).toFixed(2)) : task.progress || 0,
-    bytesPerSecond: Number(task.params?.speed || 0), path: task.params?.real_path };
+    bytesPerSecond: Number(task.params?.speed || 0), path: task.params?.real_path, dir: task.params?.parent_folder_path };
 }
 
-/** 个人设置里禁止作为下载目标的目录名（NAS_MOVIE_BLOCKED_DIRS，逗号分隔）。 */
-export function assertDownloadPath(path: string, blocked: readonly string[] = settings.blockedDirs) {
-  if (path.replace(/\\/g, '/').split('/').some(segment => blocked.includes(segment))) throw new Error('该目录不可用');
-}
 export function planFolder(paths: { Id: string; RealPath: string }[], wanted: string, blocked: readonly string[] = settings.blockedDirs) {
   assertDownloadPath(wanted, blocked);
   if (!paths.every(folder => typeof folder?.Id === 'string' && typeof folder?.RealPath === 'string')) throw new Error('迅雷目录结构变化');
@@ -82,14 +80,18 @@ export function planFolder(paths: { Id: string; RealPath: string }[], wanted: st
   return { kind: 'child' as const, parentId: parent.Id, path: `${target}/`, segments };
 }
 
-export class Thunder {
+export class Thunder implements Downloader {
+  readonly kind = 'thunder' as const;
   config: Config;
-  constructor(config: Config) { this.config = config; }
-  async tasks(): Promise<Task[]> {
+  private readonly space: string;
+  constructor(config: Config) { this.config = config; this.space = thunderConfig(config).space; }
+  ready() { return ensureThunderAuth(this.config); }
+  async tasks(): Promise<TaskSummary[]> { return (await this.rawTasks()).map(summary); }
+  async rawTasks(): Promise<Task[]> {
     const tasks: Task[] = [], seen = new Set<string>();
     let page = '';
     do {
-      const q = new URLSearchParams({ space: this.config.thunder.space, limit: '100', page_token: page });
+      const q = new URLSearchParams({ space: this.space, limit: '100', page_token: page });
       const data = await nasRequest(this.config, 'drive/v1/tasks?' + q);
       if (!Array.isArray(data.tasks)) throw new Error('迅雷任务列表结构变化');
       tasks.push(...data.tasks.filter((t: Task) => ['user#download-url', 'user#download'].includes(t.type)));
@@ -101,7 +103,7 @@ export class Thunder {
   }
   async existing(magnet: string) {
     const hash = infoHash(magnet);
-    return (await this.tasks()).find(t => t.params?.info_hash?.toLowerCase() === hash ||
+    return (await this.rawTasks()).find(t => t.params?.info_hash?.toLowerCase() === hash ||
       (t.params?.url?.startsWith('magnet:') && infoHash(t.params.url) === hash));
   }
   async preview(magnet: string) {
@@ -114,7 +116,7 @@ export class Thunder {
     let page = '';
     const seen = new Set<string>();
     do {
-      const params = new URLSearchParams({ space: this.config.thunder.space, parent_id: parentId, limit: '200',
+      const params = new URLSearchParams({ space: this.space, parent_id: parentId, limit: '200',
         filters: JSON.stringify({ kind: { eq: 'drive#folder' } }) });
       if (page) params.set('page_token', page);
       const data = await nasRequest(this.config, 'drive/v1/files?' + params);
@@ -137,7 +139,7 @@ export class Thunder {
     for (const segment of plan.segments) parentId = await this.findChildFolder(parentId, segment);
     return { id: parentId, path: plan.path };
   }
-  async download(magnet: string, path = this.config.thunder.downloadDir, dryRun = false) {
+  async download(magnet: string, path = thunderConfig(this.config).downloadDir, dryRun = false) {
     const hash = infoHash(magnet);
     assertDownloadPath(path);
     const dir = dirname(configPath), lock = join(dir, 'download.lock');

@@ -46,15 +46,20 @@ export class Gying {
     config;
     browser;
     constructor(config, browser) { this.config = config; this.browser = browser; }
+    get site() {
+        if (!this.config.gying?.baseUrl)
+            throw new Error('没有配置 gying.baseUrl');
+        return this.config.gying;
+    }
     async html(path) {
-        const origin = new URL(this.config.gying.baseUrl).origin;
-        const url = new URL(path, this.config.gying.baseUrl);
+        const origin = new URL(this.site.baseUrl).origin;
+        const url = new URL(path, this.site.baseUrl);
         if (url.origin !== origin)
             throw new Error('资源 URL 必须属于配置的观影网站');
         if (this.browser)
             return browserHtml(this.browser.space, this.browser.page, url.href);
         const r = await fetch(url, { redirect: 'manual', signal: AbortSignal.timeout(25000), headers: {
-                cookie: this.config.gying.cookie || '', 'user-agent': this.config.gying.userAgent || 'Mozilla/5.0',
+                cookie: this.site.cookie || '', 'user-agent': this.site.userAgent || 'Mozilla/5.0',
             } });
         if (r.status >= 300 && r.status < 400)
             throw new Error('观影要求登录或域名已变更，请运行 auth 导入当前登录态');
@@ -68,11 +73,11 @@ export class Gying {
         }
         return html;
     }
-    async search(title) { return parseMovies(await this.html('/search?' + new URLSearchParams({ q: title, type: '1', mode: '1' })), this.config.gying.baseUrl); }
+    async search(title) { return parseMovies(await this.html('/search?' + new URLSearchParams({ q: title, type: '1', mode: '1' })), this.site.baseUrl); }
     async resources(id) {
         if (!/^[a-z\d]+$/i.test(id))
             throw new Error('无效影片 ID');
-        const rows = parseResources(await this.html('/mv/' + id), this.config.gying.baseUrl);
+        const rows = parseResources(await this.html('/mv/' + id), this.site.baseUrl);
         if (!rows.length)
             throw new Error('未读到资源列表，登录态或网页结构可能变化');
         return rows;

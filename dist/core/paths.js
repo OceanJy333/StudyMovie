@@ -56,3 +56,8 @@ export const bookmarks = {
     file: process.env.NAS_MOVIE_BOOKMARKS_FILE || EDGE_BOOKMARKS,
     folder: process.env.NAS_MOVIE_BOOKMARKS_FOLDER || 'Teachers',
 };
+/** 个人设置里禁止作为下载目标的目录名（NAS_MOVIE_BLOCKED_DIRS，逗号分隔）。所有下载后端共用。 */
+export function assertDownloadPath(path, blocked = settings.blockedDirs) {
+    if (path.replace(/\\/g, '/').split('/').some(segment => blocked.includes(segment)))
+        throw new Error('该目录不可用');
+}

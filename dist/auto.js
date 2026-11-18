@@ -3,8 +3,9 @@ import { readJsonFile, writeJsonAtomic } from "./core/json.js";
 import { paths } from "./core/paths.js";
 import { multiNumbers, readCatalog } from "./catalog/store.js";
 import { windowCutoff } from "./core/time.js";
-import { Thunder, assertDownloadPath } from "./thunder.js";
-import { authExpiry, ensureThunderAuth } from "./thunder-auth.js";
+import { downloader } from "./downloader.js";
+import { assertDownloadPath } from "./core/paths.js";
+import { authExpiry } from "./thunder-auth.js";
 import { Javdb } from "./javdb/client.js";
 import { readRoster } from "./teachers/bookmarks.js";
 import { dedupePool, manualCandidates, performerPool, selectBackfill, selectUpdates, subscriptionPool } from "./teachers/pool.js";
@@ -17,7 +18,7 @@ export function writeState(state, path = autoStatePath) {
     return writeJsonAtomic(path, state, { pretty: true });
 }
 export function tokenExpiry(config) {
-    const expiry = authExpiry(config.thunder.headers['pan-auth'] || '');
+    const expiry = authExpiry(config.thunder?.headers['pan-auth'] || '');
     return expiry ? new Date(expiry) : null;
 }
 // skip-old 是每日任务把窗口外旧作记账、故意没下的。一次性补片不能把它们当成已经入库。
@@ -45,11 +46,12 @@ export function freshCandidates(candidates, state, days, now = new Date()) {
     return { fresh, old, seen, cutoff };
 }
 async function submitCandidates(picked, to, config, state, statePath, at) {
-    const thunder = new Thunder(config);
+    const backend = downloader(config);
+    await backend.ready();
     const results = [];
     for (const candidate of picked) {
         try {
-            const result = await thunder.download(`magnet:?xt=urn:btih:${candidate.hash}`, to, false);
+            const result = await backend.download(`magnet:?xt=urn:btih:${candidate.hash}`, to, false);
             state.seen[candidate.number.toUpperCase()] = {
                 hash: candidate.hash, date: candidate.date, source: candidate.source, at, action: result.action, taskId: result.task?.id,
             };
@@ -86,7 +88,6 @@ export async function runAuto(options) {
                 results: manual.candidates.map(candidate => ({ ...candidate, action: 'would-download' })),
             };
         }
-        await ensureThunderAuth(options.config);
         const results = await submitCandidates(manual.candidates, options.to, options.config, state, statePath, new Date().toISOString());
         const rejected = results.filter(result => result.action === 'error').map(result => result.number);
         return { apply: true, statePath, counts, failures: [...manual.failed, ...rejected], expiry: expiry?.toISOString() ?? null, cutoff: '手动指定', results };
@@ -117,7 +118,6 @@ export async function runAuto(options) {
             results: picked.download.map(candidate => ({ ...candidate, action: 'would-download' })),
         };
     }
-    await ensureThunderAuth(options.config);
     const results = await submitCandidates(picked.download, options.to, options.config, state, statePath, new Date().toISOString());
     const rejected = results.filter(result => result.action === 'error').map(result => result.number);
     return { apply: true, statePath, counts, failures: [...failures, ...rejected], expiry: expiry?.toISOString() ?? null, cutoff, results };
@@ -127,8 +127,6 @@ export async function runBackfill(options) {
     if (!options.names.length)
         throw new Error('没有老师名册');
     assertDownloadPath(options.to);
-    if (options.apply)
-        await ensureThunderAuth(options.config);
     const statePath = options.statePath || autoStatePath;
     const state = await readState(statePath);
     const client = new Javdb();

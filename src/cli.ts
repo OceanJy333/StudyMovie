@@ -2,10 +2,11 @@
 // input: CLI commands; output: JSON results; pos: studymovie entry point.
 import { parseArgs } from 'node:util';
 import { writeFile } from 'node:fs/promises';
-import { configPath, readConfig, type Config } from './config.ts';
-import { bookmarks } from './core/paths.ts';
+import { configPath, downloaderKind, readConfig, thunderConfig, type Config } from './config.ts';
+import { assertDownloadPath, bookmarks } from './core/paths.ts';
 import { assessment, features, infoHash, rankResources } from './resources.ts';
-import { Thunder, summary } from './thunder.ts';
+import { Thunder } from './thunder.ts';
+import { downloader } from './downloader.ts';
 import { authExpiry } from './thunder-auth.ts';
 import { isLocal, nasRequest, ssh } from './ssh.ts';
 import { importSession } from './browser.ts';
@@ -28,7 +29,7 @@ import { pushShowsConfig, runRemoteShows } from './shows/remote.ts';
 import { syncCatalog } from './catalog/sync.ts';
 import { decimal, flag, integer, list, oneOf, requiredArg, text, yearArg, UsageError, type Values } from './cli/args.ts';
 
-const help = `studymovie — NAS Jackett 搜索 → NAS 迅雷（SSH）
+const help = `studymovie — 追老师新作、选磁力、下载（NAS 迅雷或本机 aria2）、整理片库
 
 search <英文片名> [--year 2020]             搜索资源
 resources <英文片名> --year 2020 [--dv]     按做种、画质、体积综合排序 4K 候选
@@ -36,10 +37,10 @@ fetch <英文片名> --year 2020 [--dv]         下载匹配片名、年份的�
 --hash <BTIH>                              从搜索候选中指定资源
 --chinese --max-size 25                    要求标题中字，体积上限 25 GiB
 --source gying --id ym24                   显式使用旧观影来源
-add <magnet> [--to 迅雷目录]      添加指定资源，重复 hash 返回现有任务
-preview <magnet>                           解析种子和文件列表
+add <magnet> [--to 目录]                   添加指定资源，重复 hash 返回现有任务
+preview <magnet>                           解析种子和文件列表（仅迅雷）
 status [关键词或hash] [--all]              查询任务、实际速度和进度
-paths                                     查询可用下载目录
+paths                                     查询可用下载目录（仅迅雷）
 teachers [--name 名字] [--folder 书签夹]  查询书签夹里每人最新可下载作品
 teachers feed [--limit 20] [--per-teacher 1] [--downloadable] [--html 文件]
                                           汇总所有老师最新作品，带封面和名称
@@ -60,13 +61,13 @@ catalog [--pages 8] [--since 2024-01-01] [--names 文件] [--full]
 shows list                                查看电视剧/番剧订阅
 shows add <名字> --query "搜索词" [--season 1] [--episodes 12] [--subtitle zh] [--kind tv|anime]
 shows remove <名字>                       删除订阅
-shows check [--apply]                     搜索新集；--apply 才提交迅雷
+shows check [--apply]                     搜索新集；--apply 才提交下载
 shows organize [--apply]                  把下载完的剧集按「剧名/Season 01」归档
-doctor                                    检查宿主 SSH 和迅雷登录态
+doctor                                    检查下载后端（迅雷登录态或 aria2 RPC）
 auth --space 5 --nas-page p1 --site-page p2 导入已登录页面会话
 
 --dry-run 仅输出下载计划，不创建任务。teachers pull 默认也是计划。
-默认 Jackett 搜索与下载走 SSH，无需浏览器。旧观影来源可加 --space/--site-page。
+下载后端：config.json 的 downloader 为 thunder（NAS 迅雷，经 SSH）或 aria2（本机，自动拉起 aria2c）；没有 config.json 时用 aria2。
 配置：${configPath}
 `;
 
@@ -121,7 +122,7 @@ const commands: Record<string, Run> = {
       if (!resource) throw new Error('没有符合片名、年份及画质要求的资源');
       return {
         source: 'jackett', selected: { ...resource, ...assessment(resource) },
-        ...await new Thunder(c).download(resource.magnet, text(v, 'to'), flag(v, 'dry-run')),
+        ...await downloader(c).download(resource.magnet, text(v, 'to'), flag(v, 'dry-run')),
       };
     }
     const { Gying, chooseMovie } = await import('./gying.ts');
@@ -131,20 +132,17 @@ const commands: Record<string, Run> = {
     if (!resource) throw new Error('没有符合条件的 4K 资源');
     return {
       movie, selected: resource,
-      ...await new Thunder(c).download(resource.magnet, text(v, 'to'), flag(v, 'dry-run')),
+      ...await downloader(c).download(resource.magnet, text(v, 'to'), flag(v, 'dry-run')),
     };
   },
 
-  add: ({ v, a, c }) => new Thunder(c).download(requiredArg(a, 1, 'add 缺少 magnet'), text(v, 'to'), flag(v, 'dry-run')),
+  add: ({ v, a, c }) => downloader(c).download(requiredArg(a, 1, 'add 缺少 magnet'), text(v, 'to'), flag(v, 'dry-run')),
   preview: ({ a, c }) => new Thunder(c).preview(requiredArg(a, 1, 'preview 缺少 magnet')),
 
   async status({ v, a, c }) {
     const term = (a[1] || '').toLowerCase();
-    const tasks = await new Thunder(c).tasks();
-    return tasks
-      .filter(task => (flag(v, 'all') || term || task.phase !== 'PHASE_TYPE_COMPLETE')
-        && (!term || task.name.toLowerCase().includes(term) || task.params?.info_hash?.toLowerCase() === term))
-      .map(summary);
+    return (await downloader(c).tasks())
+      .filter(task => (flag(v, 'all') || term || !task.done) && (!term || task.name.toLowerCase().includes(term) || task.hash === term));
   },
 
   async paths({ c }) {
@@ -218,7 +216,6 @@ const commands: Record<string, Run> = {
     }
     if (sub === 'pull') {
       const to = text(v, 'to') || defaultArchiveRoot;
-      const { assertDownloadPath } = await import('./thunder.ts');
       assertDownloadPath(to);
     }
     return runTeachers({
@@ -323,15 +320,20 @@ const commands: Record<string, Run> = {
   },
 
   async doctor({ c }) {
+    if (downloaderKind(c) === 'aria2') {
+      const tasks = await downloader(c).tasks();
+      return { downloader: 'aria2', rpc: c.aria2?.rpc || 'http://127.0.0.1:6800/jsonrpc', tasks: tasks.length,
+        active: tasks.filter(task => !task.done).length, archive: defaultArchiveRoot, config: configPath };
+    }
     const host = await ssh(c, 'hostname; id -un');
     const tasks = await new Thunder(c).tasks();
-    const expiry = authExpiry(c.thunder.headers['pan-auth'] || '');
+    const expiry = authExpiry(thunderConfig(c).headers['pan-auth'] || '');
     const shows = await readShows();
     const showsState = await readShowsState();
     return {
-      ssh: host.trim().split('\n'), thunder: 'ok', tasks: tasks.length,
+      downloader: 'thunder', ssh: host.trim().split('\n'), thunder: 'ok', tasks: tasks.length,
       jackett: (await ssh(c, 'systemctl --user is-active jackett')).trim(),
-      authExpiresAt: expiry ? new Date(expiry).toISOString() : null, downloadDir: c.thunder.downloadDir,
+      authExpiresAt: expiry ? new Date(expiry).toISOString() : null, downloadDir: thunderConfig(c).downloadDir,
       shows: { root: shows.root, subscriptions: shows.subscriptions.length, lastCheck: showsState.lastCheck },
     };
   },

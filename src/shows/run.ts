@@ -3,8 +3,8 @@ import type { Config } from '../config.ts';
 import { stderrNote } from '../core/log.ts';
 import { nowIso } from '../core/time.ts';
 import { Jackett, type JackettResult } from '../jackett.ts';
-import { Thunder, assertDownloadPath } from '../thunder.ts';
-import { ensureThunderAuth } from '../thunder-auth.ts';
+import { downloader } from '../downloader.ts';
+import { assertDownloadPath } from '../core/paths.ts';
 import { readShows, showsPath } from './config.ts';
 import { scanShows } from './library.ts';
 import { episodeKey } from './parse.ts';
@@ -29,8 +29,8 @@ export async function checkShows(options: CheckOptions) {
   const notes: string[] = [];
   let groupsSeen = 0, fresh = 0, submitted = 0, remaining = 0, errors = 0;
   const startedAt = nowIso();
-  const thunder = options.apply ? new Thunder(options.config) : null;
-  if (thunder) await ensureThunderAuth(options.config);
+  const backend = options.apply ? downloader(options.config) : null;
+  await backend?.ready();
 
   for (const subscription of options.shows.subscriptions.filter(item => item.enabled)) {
     let groups;
@@ -66,7 +66,7 @@ export async function checkShows(options: CheckOptions) {
         continue;
       }
       try {
-        const result = await thunder!.download(group.magnet, options.shows.root, false);
+        const result = await backend!.download(group.magnet, options.shows.root, false);
         const at = nowIso();
         for (const episode of group.episodes) {
           state.seen[episodeKey(subscription.name, group.season, episode)] = {

@@ -14,8 +14,7 @@ import { defaultArchiveRoot, splitActresses, unknownActress, type MovieMeta } fr
 import { LibraryScanner, type LibraryItem } from '../library/scan.ts';
 import { bestMagnet, jdbCover, usableMagnets } from '../javdb/index.ts';
 import { Javdb } from '../javdb/client.ts';
-import { Thunder } from '../thunder.ts';
-import { ensureThunderAuth } from '../thunder-auth.ts';
+import { downloader } from '../downloader.ts';
 import { contentType, parseRange, safeMediaPath, safeNestedMediaPath } from './media.ts';
 import { renderShowDetail, renderShows } from './shows.ts';
 import { readShows, showsPath } from '../shows/config.ts';
@@ -130,7 +129,7 @@ export async function startWeb(options: WebOptions): Promise<WebHandle> {
   const scanner = new LibraryScanner();
   const javdb = new Javdb();
   const covers = new HttpClient({ label: 'JavDB 封面', concurrency: 6, timeoutMs: 20_000 });
-  const thunder = new Thunder(options.config);
+  const backend = downloader(options.config);
 
   let meta: Stamped<Record<string, MovieMeta>> | null = null;
   let catalog: Stamped<CatalogDoc> | null = null;
@@ -265,8 +264,8 @@ export async function startWeb(options: WebOptions): Promise<WebHandle> {
     const magnets = usableMagnets(await javdb.magnets(number));
     const picked = bestMagnet(magnets);
     if (!picked?.hash) throw new ApiError(409, '这部没有可用磁力');
-    await ensureThunderAuth(options.config);
-    const result = await thunder.download(`magnet:?xt=urn:btih:${picked.hash}`, options.root);
+    await backend.ready();
+    const result = await backend.download(`magnet:?xt=urn:btih:${picked.hash}`, options.root);
     done.add(number);
     await saveSubmitted(done);
     return { number, action: result.action, taskId: result.task?.id, phase: result.task?.phase, name: picked.name ?? null };

@@ -1,3 +1,5 @@
+// input: NAS UI page and connection config; output: current UIAuth; pos: Thunder authorization source.
+import { thunderConfig } from "./config.js";
 import { ssh } from "./transport.js";
 export function authExpiry(token) {
     try {
@@ -23,19 +25,20 @@ export function pageAuth(html, now = Date.now()) {
 const loaded = new WeakSet();
 const pending = new WeakMap();
 export async function ensureThunderAuth(config) {
-    const expiry = authExpiry(config.thunder.headers['pan-auth'] || '');
+    const thunder = thunderConfig(config);
+    const expiry = authExpiry(thunder.headers['pan-auth'] || '');
     if (loaded.has(config) && expiry && expiry > Date.now() + 60_000)
         return;
     const active = pending.get(config);
     if (active)
         return active;
     const request = (async () => {
-        const url = new URL('/', config.thunder.baseUrl);
+        const url = new URL('/', thunder.baseUrl);
         if (url.protocol !== 'http:' || !['127.0.0.1', 'localhost'].includes(url.hostname)) {
             throw new Error('迅雷自动授权需要 NAS 本机 HTTP 接口');
         }
         const html = await ssh(config, 'curl --silent --show-error --fail --max-time 15 --config -', `url = ${JSON.stringify(url.href)}\n`);
-        config.thunder.headers['pan-auth'] = pageAuth(html);
+        thunder.headers['pan-auth'] = pageAuth(html);
         loaded.add(config);
     })();
     pending.set(config, request);

@@ -6,7 +6,7 @@ import type { Config } from '../config.ts';
 import { readJsonFile, writeJsonAtomic } from '../core/json.ts';
 import { paths } from '../core/paths.ts';
 import { Javdb } from '../javdb/client.ts';
-import { Thunder, type Task } from '../thunder.ts';
+import { downloader, type TaskSummary } from '../downloader.ts';
 import { MetaStore } from './meta.ts';
 import { mapLimit } from '../core/async.ts';
 import { readCatalog } from '../catalog/store.ts';
@@ -178,18 +178,17 @@ export async function runOrganize(options: OrganizeOptions) {
   const known = new Set<string>([...PREFIX_SEED, ...ledger.prefixes]);
   const actresses = new Set<string>([...ledger.actresses, ...(options.extraActresses ?? [])]);
 
-  let tasks: Task[] = [];
+  let tasks: TaskSummary[] = [];
   let taskWarning: string | null = null;
-  try { tasks = await new Thunder(options.config).tasks(); }
-  catch (error) { taskWarning = error instanceof Error ? error.message : '迅雷任务查询失败'; }
+  try { tasks = await downloader(options.config).tasks(); }
+  catch (error) { taskWarning = error instanceof Error ? error.message : '下载任务查询失败'; }
   const activePaths = new Set<string>();
   const completedPaths = new Set<string>();
   for (const task of tasks) {
-    for (const key of ['real_path', 'parent_folder_path']) {
-      const value = task.params?.[key];
+    for (const value of [task.path, task.dir]) {
       if (!value) continue;
       const trimmed = value.replace(/\/+$/, '');
-      if (task.phase === 'PHASE_TYPE_COMPLETE') completedPaths.add(trimmed);
+      if (task.done) completedPaths.add(trimmed);
       else activePaths.add(trimmed);
     }
   }

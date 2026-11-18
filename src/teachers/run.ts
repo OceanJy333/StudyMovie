@@ -2,7 +2,8 @@
 import type { Config } from '../config.ts';
 import { mapLimit } from '../core/async.ts';
 import { stderrNote } from '../core/log.ts';
-import { Thunder, assertDownloadPath } from '../thunder.ts';
+import { downloader } from '../downloader.ts';
+import { assertDownloadPath } from '../core/paths.ts';
 import { Javdb } from '../javdb/client.ts';
 import { pickNames } from './bookmarks.ts';
 import { feedFor, mergeFeed, onlyDownloadable, planFeed } from './feed.ts';
@@ -46,12 +47,13 @@ export async function runTeachers(options: {
   if (options.action === 'list' || !options.apply) {
     return ordered.map(row => ({ ...present(row), ...(options.action === 'pull' ? { action: row.status === 'ok' ? 'planned' : 'skipped' } : {}) }));
   }
-  const thunder = new Thunder(options.config);
+  const backend = downloader(options.config);
+  await backend.ready();
   const submitted = [];
   for (const row of ordered) {
     if (row.status !== 'ok' || !row.hash) { submitted.push({ ...present(row), action: 'skipped' }); continue; }
     try {
-      const result = await thunder.download(`magnet:?xt=urn:btih:${row.hash}`, options.to, false);
+      const result = await backend.download(`magnet:?xt=urn:btih:${row.hash}`, options.to, false);
       submitted.push({ ...present(row), action: result.action, taskId: result.task?.id, phase: result.task?.phase, path: result.task?.path });
     } catch (error) {
       submitted.push({ ...present(row), action: 'error', error: error instanceof Error ? error.message : '下载失败' });

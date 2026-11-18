@@ -4,7 +4,7 @@ import { basename, dirname, extname, join, relative, sep } from 'node:path';
 import { readJsonFile, writeJsonAtomic } from "../core/json.js";
 import { paths } from "../core/paths.js";
 import { Javdb } from "../javdb/client.js";
-import { Thunder } from "../thunder.js";
+import { downloader } from "../downloader.js";
 import { MetaStore } from "./meta.js";
 import { mapLimit } from "../core/async.js";
 import { readCatalog } from "../catalog/store.js";
@@ -180,20 +180,19 @@ export async function runOrganize(options) {
     let tasks = [];
     let taskWarning = null;
     try {
-        tasks = await new Thunder(options.config).tasks();
+        tasks = await downloader(options.config).tasks();
     }
     catch (error) {
-        taskWarning = error instanceof Error ? error.message : '迅雷任务查询失败';
+        taskWarning = error instanceof Error ? error.message : '下载任务查询失败';
     }
     const activePaths = new Set();
     const completedPaths = new Set();
     for (const task of tasks) {
-        for (const key of ['real_path', 'parent_folder_path']) {
-            const value = task.params?.[key];
+        for (const value of [task.path, task.dir]) {
             if (!value)
                 continue;
             const trimmed = value.replace(/\/+$/, '');
-            if (task.phase === 'PHASE_TYPE_COMPLETE')
+            if (task.done)
                 completedPaths.add(trimmed);
             else
                 activePaths.add(trimmed);

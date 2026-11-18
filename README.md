@@ -1,28 +1,29 @@
 # StudyMovie
 
-**StudyMovie is a self-hosted command-line tool that turns a home NAS into an automatic JAV library.** It follows the actresses you bookmark, finds their new releases on JavDB, sends the best magnet to the NAS's Thunder (迅雷) downloader, renames every finished file to `YYYY-MM-DD CODE Actress.ext`, and serves a LAN web wall of what you have and what you are missing. It also subscribes to TV series and anime and files episodes into `Show/Season 01/`.
+**StudyMovie is a self-hosted command-line tool that keeps an automatic JAV library on your own computer or a home NAS.** It follows the actresses you bookmark, finds their new releases on JavDB, downloads the best magnet with aria2 (BitTorrent, any computer) or Thunder (迅雷, on a NAS), renames every finished file to `YYYY-MM-DD CODE Actress.ext`, and serves a LAN web wall of what you have and what you are missing. It also subscribes to TV series and anime and files episodes into `Show/Season 01/`.
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
 ![Node.js ≥ 18](https://img.shields.io/badge/node-%E2%89%A518-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)
 ![Runtime dependencies](https://img.shields.io/badge/runtime%20deps-0%20on%20the%20NAS-555)
-![Tests](https://img.shields.io/badge/tests-77%20passing-2f7d4f)
+![Tests](https://img.shields.io/badge/tests-81%20passing-2f7d4f)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
-<p align="center"><img src="docs/architecture.svg" alt="Architecture: bookmarks, JavDB API, javdb.com pages and sukebei feed studymovie on the NAS, which drives Thunder, organizes the library and serves a web wall" width="100%"></p>
+<p align="center"><img src="docs/architecture.svg" alt="Architecture: bookmarks, JavDB API, javdb.com pages and sukebei feed StudyMovie, which drives aria2 or Thunder, organizes the library and serves a web wall" width="100%"></p>
 
 ## At a glance
 
 | | |
 |---|---|
-| **What it is** | A TypeScript CLI plus five systemd user timers and one small web server, all running on the NAS |
-| **Who it is for** | People with a NAS running Thunder (for example UGREEN UGOS) who want new releases of followed actresses to download and file themselves |
+| **What it is** | A TypeScript CLI and one small web server; on a NAS, also five systemd user timers |
+| **Who it is for** | Anyone who wants new releases of followed actresses to download and file themselves, on a laptop or on a NAS |
+| **Download backends** | aria2 on this computer (default; started automatically) or Thunder (迅雷) on a NAS over SSH |
 | **Input** | A browser bookmark folder of actress pages (Edge or Chrome format) |
 | **Output** | A flat, date-sorted library: `2026-09-10 ABC-123 Actress A、Actress B.mp4` |
 | **Metadata** | JavDB public app endpoints and javdb.com movie pages, no account or login |
 | **Magnets** | javdb.com movie page first, sukebei RSS as fallback |
-| **Runtime on the NAS** | Node.js 18+, no npm packages (only `dist/` is deployed) |
+| **Runtime** | Node.js 18+, no runtime npm packages |
 | **Measured** | Full deploy in about 2 minutes; daily auto run in about 1 minute for a pool of ~570 works; re-checking a 380-file library from cache in 1.4 s |
 
 ## Why does it exist?
@@ -32,11 +33,12 @@ Following 60+ actresses by hand means checking every profile, finding a magnet, 
 ## Features
 
 - **Follow actresses, not files.** Bookmark an actress page and her new releases are queued automatically. Actress IDs are pinned in a roster file, so renamed or aliased names keep working.
+- **Download where you are.** On a laptop or desktop it drives aria2 (starts the daemon itself, resumes after restarts, stops seeding when done). On a NAS it drives Thunder.
 - **Two magnet sources with a schedule.** Works are queried from one day before release, daily for 14 days, then weekly. Unreleased works cost no requests.
 - **Picks the sensible release.** Full releases over samples, original over AI "reducing mosaic" edits, seeded over dead, smaller non-HD first.
 - **Library organizer.** Parses messy names such as `hhd800.com@ABC123ch.mp4`, looks up the female cast, writes all co-stars (up to four, then `等`), and moves leftovers to a trash folder with a rollback log.
 - **LAN library wall.** Covers, search, filter by actress, play in the browser, and one-click download for works you are missing.
-- **TV and anime subscriptions.** Searches through Jackett, submits new episodes and archives them as `Show/Season 01/Show - S01E03.mkv` for Jellyfin.
+- **TV and anime subscriptions.** Searches through Jackett, downloads new episodes and archives them as `Show/Season 01/Show - S01E03.mkv` for Jellyfin.
 - **Fails loudly.** Any failed source or submission makes the run exit 1, so `systemctl --user status` shows the problem the same day.
 
 ## How does it work?
@@ -73,27 +75,32 @@ To give the agent the skill permanently, add it with the open [skills](https://g
 npx skills add OceanJy333/StudyMovie
 ```
 
-The agent then installs the CLI locally (`npm install -g --install-links github:OceanJy333/StudyMovie`), asks you for the NAS and Thunder settings, and maps requests such as "download ABC-123" or "what is the NAS downloading?" to commands. It always shows the plan before it adds `--apply`.
+The agent then installs the CLI locally (`npm install -g --install-links github:OceanJy333/StudyMovie`), asks whether to download on this computer or on a NAS, and maps requests such as "download ABC-123" or "what is the NAS downloading?" to commands. It always shows the plan before it adds `--apply`.
 
 ## Quick start
 
-### Requirements
+### On your own computer (aria2)
+
+You need Node.js 18+ and [aria2](https://aria2.github.io/) (`brew install aria2`, `sudo apt install aria2` or `winget install aria2.aria2`).
+
+```bash
+npm install -g --install-links github:OceanJy333/StudyMovie
+mkdir -p ~/.config/nas-movie
+echo 'NAS_MOVIE_ARCHIVE=/path/to/library' >> ~/.config/nas-movie/env
+studymovie doctor
+studymovie teachers auto --numbers ABC-123 --apply
+```
+
+No `config.json` is needed. The first download starts an `aria2c` daemon on `127.0.0.1:6800`; it keeps downloading after the command exits and resumes after a restart. `studymovie status` shows progress, and `studymovie organize --apply` renames finished files. To use an aria2 you already run (Motrix, a seedbox), put `{"downloader": "aria2", "aria2": {"rpc": "http://host:6800/jsonrpc", "secret": "…"}}` in `~/.config/nas-movie/config.json`.
+
+### On a NAS (Thunder and timers)
 
 - A Linux NAS with SSH access and systemd user services (tested on UGREEN UGOS, Debian based).
 - Thunder (迅雷) for NAS with its local API on `127.0.0.1:5050`.
 - Node.js 18 or newer on the NAS; Node.js 22.6+ on the machine you build from.
 - Optional: an HTTP proxy on the NAS (mihomo/clash) if javdb.com or sukebei is blocked on your network; Jackett for movie and TV search.
 
-### Install the CLI on your computer
-
-```bash
-npm install -g --install-links github:OceanJy333/StudyMovie
-studymovie --help
-```
-
-The CLI talks to the NAS over SSH, so you can use it from a laptop without the timers.
-
-### Install from source and deploy the timers
+Install from source and deploy the timers:
 
 ```bash
 git clone https://github.com/OceanJy333/StudyMovie.git
@@ -134,7 +141,7 @@ npm run movie -- organize
 | `organize [--apply]` | Flatten finished downloads into the library and rename them |
 | `web [--port 8850]` | Serve the LAN library wall |
 | `shows add <name> --query "..."` / `shows check --apply` / `shows organize --apply` | TV and anime subscriptions |
-| `status`, `paths`, `add <magnet>`, `doctor` | Thunder tasks, download folders, manual add, health check |
+| `status`, `add <magnet>`, `doctor` | Download tasks, manual add, health check (`paths` lists Thunder folders) |
 | `search` / `resources` / `fetch <title> --year 2020` | Movie search through Jackett with seed, quality and size ranking |
 
 ## Configuration
@@ -144,7 +151,7 @@ Personal settings live in `~/.config/nas-movie/env` (see [`env.example`](env.exa
 | Variable | Default | Meaning |
 |---|---|---|
 | `NAS_SSH` | (required for deploy) | ssh config host of the NAS |
-| `NAS_MOVIE_ARCHIVE` | `~/Media/JAV` | Flat JAV library and default Thunder target |
+| `NAS_MOVIE_ARCHIVE` | `~/Media/JAV` | Flat JAV library and default download folder |
 | `NAS_MOVIE_SHOWS_ROOT` | `~/Media/Shows` | TV / anime library |
 | `NAS_MOVIE_TRASH` | `~/.nas-movie-trash` | Where organize moves leftovers |
 | `NAS_MOVIE_BOOKMARKS_HOST` | empty (local) | ssh host that holds the browser bookmarks |
@@ -174,14 +181,14 @@ Only files already in the `YYYY-MM-DD CODE Actress.ext` format at the library ro
 
 ### Can I use it without a NAS?
 
-The CLI runs anywhere with Node.js, but downloading relies on the Thunder NAS API, and the timers are systemd user units. The organizer and the web wall work on any folder.
+Yes. Without a `config.json` the CLI downloads with aria2 on the machine it runs on, and the organizer and web wall work on any folder. Only the deploy script and its systemd timers are NAS-specific; on a laptop, run `teachers auto --apply` when you want, or schedule it yourself. macOS is tested; Linux should behave the same; Windows is untested.
 
 ### How is it different from metadata scrapers?
 
 | | Metadata scrapers | StudyMovie |
 |---|---|---|
 | Finds new releases of followed actresses | No | Yes, daily |
-| Starts downloads | No | Yes, through Thunder |
+| Starts downloads | No | Yes, aria2 or Thunder |
 | Renames into a flat library | Yes | Yes, with all co-stars |
 | Writes NFO files and posters for media servers | Usually | No, the file name is the metadata |
 | Runs unattended on the NAS | Rarely | Yes, systemd timers |
@@ -207,7 +214,7 @@ deploy-nas.sh build, upload, install timers, dry run
 
 ```bash
 npm run check   # tsc --noEmit
-npm test        # node --test, 77 tests
+npm test        # node --test, 81 tests
 npm run build   # dist/ for the NAS
 ```
 

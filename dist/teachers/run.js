@@ -1,6 +1,7 @@
 import { mapLimit } from "../core/async.js";
 import { stderrNote } from "../core/log.js";
-import { Thunder, assertDownloadPath } from "../thunder.js";
+import { downloader } from "../downloader.js";
+import { assertDownloadPath } from "../core/paths.js";
 import { Javdb } from "../javdb/client.js";
 import { pickNames } from "./bookmarks.js";
 import { feedFor, mergeFeed, onlyDownloadable, planFeed } from "./feed.js";
@@ -38,7 +39,8 @@ export async function runTeachers(options) {
     if (options.action === 'list' || !options.apply) {
         return ordered.map(row => ({ ...present(row), ...(options.action === 'pull' ? { action: row.status === 'ok' ? 'planned' : 'skipped' } : {}) }));
     }
-    const thunder = new Thunder(options.config);
+    const backend = downloader(options.config);
+    await backend.ready();
     const submitted = [];
     for (const row of ordered) {
         if (row.status !== 'ok' || !row.hash) {
@@ -46,7 +48,7 @@ export async function runTeachers(options) {
             continue;
         }
         try {
-            const result = await thunder.download(`magnet:?xt=urn:btih:${row.hash}`, options.to, false);
+            const result = await backend.download(`magnet:?xt=urn:btih:${row.hash}`, options.to, false);
             submitted.push({ ...present(row), action: result.action, taskId: result.task?.id, phase: result.task?.phase, path: result.task?.path });
         }
         catch (error) {

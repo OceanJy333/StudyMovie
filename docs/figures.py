@@ -95,7 +95,7 @@ def architecture():
           node(32, 384, 220, 64, 'sukebei RSS', 'fallback magnets by code', 'FALLBACK')]
     b += [node(372, 196, 216, 156, 'StudyMovie', ['teachers auto · 18:00', 'organize · 15:00', 'catalog · 03:00', 'web · :8850'],
                'RUNS ON THE NAS', kind='focal')]
-    b += [node(680, 128, 236, 60, 'Thunder (迅雷)', 'NAS download engine', 'DOWNLOAD'),
+    b += [node(680, 128, 236, 60, 'aria2 / Thunder', 'this computer or NAS', 'DOWNLOAD'),
           node(680, 256, 236, 60, 'Flat library', 'date · code · actress.mp4', 'FILES'),
           node(680, 384, 236, 60, 'Library wall', 'covers · play · 1-click get', 'LAN WEB')]
     b += ['<line class="rule" x1="32" y1="488" x2="916" y2="488"/>',
@@ -103,7 +103,7 @@ def architecture():
           '<line class="aline" x1="170" y1="509" x2="200" y2="509"/><text class="mono e muted" x="208" y="513">PRIMARY PATH</text>',
           '<line class="line dash" x1="330" y1="509" x2="360" y2="509"/><text class="mono e muted" x="368" y="513">FALLBACK</text>']
     return svg(s, 948, 536, 'How StudyMovie fits together',
-               'Bookmarks, the JavDB API, javdb.com pages and sukebei feed StudyMovie on the NAS, which submits to Thunder, renames files into a flat library and serves a library wall.',
+               'Bookmarks, the JavDB API, javdb.com pages and sukebei feed StudyMovie, which submits to aria2 or Thunder, renames files into a flat library and serves a library wall.',
                '\n'.join(b))
 
 
@@ -149,7 +149,7 @@ def magnets():
           node(232, 116, 140, 64, 'Due today?', 'by release date', 'RULE'),
           node(432, 116, 170, 64, 'javdb.com page', '~1.3 pages / sec', 'PRIMARY', kind='focal'),
           node(662, 116, 150, 64, 'Pick the best', 'full, smaller first', 'CHOOSE'),
-          node(872, 116, 136, 64, 'Submit', 'to Thunder', 'DONE'),
+          node(872, 116, 136, 64, 'Submit', 'to downloader', 'DONE'),
           node(232, 248, 140, 64, 'Wait', 'not checked today', 'SKIP', kind='dim'),
           node(432, 248, 170, 64, 'sukebei RSS', '&lt; 1 request / sec', 'FALLBACK'),
           node(662, 248, 150, 64, 'No torrent yet', 'retry on schedule', 'LATER', kind='dim')]

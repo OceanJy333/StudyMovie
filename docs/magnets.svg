@@ -62,7 +62,7 @@
 <rect class="tag" x="884" y="126" width="36" height="16" rx="2"/>
 <text class="mono e muted" x="888" y="138">DONE</text>
 <text class="n ink" x="884" y="162">Submit</text>
-<text class="mono s soft" x="884" y="180">to Thunder</text>
+<text class="mono s soft" x="884" y="180">to downloader</text>
 <rect class="dim" x="232" y="248" width="140" height="78" rx="6"/>
 <rect class="tag" x="244" y="258" width="36" height="16" rx="2"/>
 <text class="mono e muted" x="248" y="270">SKIP</text>

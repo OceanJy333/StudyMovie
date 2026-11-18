@@ -1,27 +1,28 @@
 # StudyMovie
 
-**StudyMovie 是一个自托管的命令行工具，把家里的 NAS 变成自动更新的 JAV 片库。** 你在浏览器里收藏演员页，它每天去 JavDB 找这些演员的新作，把最合适的磁力交给 NAS 上的迅雷下载，下完后把文件统一命名成 `发行日期 番号 演员.ext`，再在局域网里提供一面影片墙，显示已有和缺少的作品。它也能订阅电视剧和番剧，下完按 `剧名/Season 01/` 归档。
+**StudyMovie 是一个自托管的命令行工具，在你自己的电脑或家里的 NAS 上维护一个自动更新的 JAV 片库。** 你在浏览器里收藏演员页，它去 JavDB 找这些演员的新作，挑最合适的磁力，用本机的 aria2（BT，任何电脑）或 NAS 上的迅雷下载，下完后把文件统一命名成 `发行日期 番号 演员.ext`，再在局域网里提供一面影片墙，显示已有和缺少的作品。它也能订阅电视剧和番剧，下完按 `剧名/Season 01/` 归档。
 
 [English](README.md) · [简体中文](README.zh-CN.md)
 
 ![Node.js ≥ 18](https://img.shields.io/badge/node-%E2%89%A518-339933?logo=node.js&logoColor=white)
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178c6?logo=typescript&logoColor=white)
-![Tests](https://img.shields.io/badge/tests-77%20passing-2f7d4f)
+![Tests](https://img.shields.io/badge/tests-81%20passing-2f7d4f)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
 
-<p align="center"><img src="docs/architecture.svg" alt="架构：书签、JavDB App 接口、javdb.com 影片页和 sukebei 为 NAS 上的 StudyMovie 提供数据，StudyMovie 驱动迅雷、整理片库并提供影片墙" width="100%"></p>
+<p align="center"><img src="docs/architecture.svg" alt="架构：书签、JavDB App 接口、javdb.com 影片页和 sukebei 为 StudyMovie 提供数据，StudyMovie 驱动 aria2 或迅雷、整理片库并提供影片墙" width="100%"></p>
 
 ## 一览
 
 | | |
 |---|---|
-| **是什么** | 一个 TypeScript CLI，加 5 个 systemd 用户定时任务和一个小型 Web 服务，全部跑在 NAS 上 |
-| **适合谁** | NAS 上装了迅雷（如绿联 UGOS），想让关注演员的新作自动下载、自动归档的人 |
+| **是什么** | 一个 TypeScript CLI 和一个小型 Web 服务；放在 NAS 上时再加 5 个 systemd 用户定时任务 |
+| **适合谁** | 想让关注演员的新作自动下载、自动归档的人，笔记本或 NAS 都行 |
+| **下载后端** | 本机 aria2（默认，自动拉起）或 NAS 上的迅雷（经 SSH） |
 | **输入** | 浏览器书签里的一个演员页文件夹（Edge / Chrome 格式） |
 | **输出** | 平铺、按日期排序的片库：`2026-09-10 ABC-123 演员甲、演员乙.mp4` |
 | **元数据** | JavDB 仍公开的 App 接口和 javdb.com 影片网页，不需要账号 |
 | **磁力** | 先取 javdb.com 影片页上的磁力，没有再查 sukebei RSS |
-| **NAS 上的运行环境** | Node.js 18+，不装 npm 依赖（只部署 `dist/`） |
+| **运行环境** | Node.js 18+，没有运行时 npm 依赖 |
 | **实测** | 完整部署约 2 分钟；约 570 部作品的池子，每日任务约 1 分钟；380 个文件的片库用缓存重算一次 1.4 秒 |
 
 ## 为什么做这个？
@@ -31,11 +32,12 @@
 ## 功能
 
 - **跟人，不跟文件。** 收藏演员页，她的新作就会自动排进下载。演员 id 固化在名册文件里，改名、别名都不受影响。
+- **在哪都能下。** 在笔记本或台式机上驱动 aria2（自己拉起守护进程，重启后续传，下完不做种）；在 NAS 上驱动迅雷。
 - **双磁力来源，按日程查询。** 从发行前一天开始查，发行后两周每天查，之后每周查一次。没发行的作品不发请求。
 - **挑合适的版本。** 完整版优先于样片，原版优先于 AI 去码版，有做种的优先，非高清、体积小的优先。
 - **片库整理。** 能解析 `hhd800.com@ABC123ch.mp4` 这类乱名，查出全部女演员（最多写 4 位，再多加「等」），种子和广告挪进回收目录，每次移动都记账可回滚。
 - **局域网影片墙。** 封面、搜索、按演员筛选、浏览器内播放，没下的作品一键下载。
-- **剧集和番剧订阅。** 通过 Jackett 搜索新集，提交迅雷，下完按 `剧名/Season 01/剧名 - S01E03.mkv` 归档，Jellyfin 直接识别。
+- **剧集和番剧订阅。** 通过 Jackett 搜索新集并下载，下完按 `剧名/Season 01/剧名 - S01E03.mkv` 归档，Jellyfin 直接识别。
 - **出错就报错。** 任何数据源或提交失败，任务都以退出码 1 结束，当天就能在 `systemctl --user status` 里看到。
 
 ## 怎么工作？
@@ -72,27 +74,32 @@ StudyMovie 自带一个 [agent skill](skills/studymovie/SKILL.md)。把下面这
 npx skills add OceanJy333/StudyMovie
 ```
 
-agent 会把 CLI 装到本机（`npm install -g --install-links github:OceanJy333/StudyMovie`），向你要 NAS 和迅雷的设置，再把"下载 ABC-123""NAS 在下什么"这类请求翻成命令。它总是先给出计划，再加 `--apply` 执行。
+agent 会把 CLI 装到本机（`npm install -g --install-links github:OceanJy333/StudyMovie`），先问你在本机下还是在 NAS 上下，再把"下载 ABC-123""NAS 在下什么"这类请求翻成命令。它总是先给出计划，再加 `--apply` 执行。
 
 ## 快速开始
 
-### 需要什么
+### 在自己电脑上（aria2）
+
+需要 Node.js 18+ 和 [aria2](https://aria2.github.io/)（`brew install aria2`、`sudo apt install aria2` 或 `winget install aria2.aria2`）。
+
+```bash
+npm install -g --install-links github:OceanJy333/StudyMovie
+mkdir -p ~/.config/nas-movie
+echo 'NAS_MOVIE_ARCHIVE=/path/to/library' >> ~/.config/nas-movie/env
+studymovie doctor
+studymovie teachers auto --numbers ABC-123 --apply
+```
+
+不需要 `config.json`。第一次下载时会在 `127.0.0.1:6800` 拉起 `aria2c` 守护进程，命令退出后继续下载，重启后续传。`studymovie status` 看进度，`studymovie organize --apply` 给下完的文件改名。想用已经在跑的 aria2（Motrix、远程下载机），在 `~/.config/nas-movie/config.json` 写 `{"downloader": "aria2", "aria2": {"rpc": "http://host:6800/jsonrpc", "secret": "…"}}`。
+
+### 在 NAS 上（迅雷和定时任务）
 
 - 能 SSH 登录、支持 systemd 用户服务的 Linux NAS（在绿联 UGOS 上验证过，基于 Debian）。
 - NAS 版迅雷，本机接口在 `127.0.0.1:5050`。
 - NAS 上 Node.js 18 或更新；构建用的电脑上 Node.js 22.6+。
 - 可选：网络访问不了 javdb.com 或 sukebei 时，NAS 上需要一个 HTTP 代理（mihomo / clash）；搜电影和剧集需要 Jackett。
 
-### 在电脑上安装 CLI
-
-```bash
-npm install -g --install-links github:OceanJy333/StudyMovie
-studymovie --help
-```
-
-CLI 通过 SSH 连 NAS，不装定时任务也能在笔记本上直接用。
-
-### 从源码安装并部署定时任务
+从源码安装并部署定时任务：
 
 ```bash
 git clone https://github.com/OceanJy333/StudyMovie.git
@@ -133,7 +140,7 @@ npm run movie -- organize
 | `organize [--apply]` | 把下载完的片子平铺进片库并改名 |
 | `web [--port 8850]` | 启动局域网影片墙 |
 | `shows add <名字> --query "..."` / `shows check --apply` / `shows organize --apply` | 剧集和番剧订阅 |
-| `status`、`paths`、`add <magnet>`、`doctor` | 迅雷任务、下载目录、手动添加、健康检查 |
+| `status`、`add <magnet>`、`doctor` | 下载任务、手动添加、健康检查（`paths` 列迅雷目录） |
 | `search` / `resources` / `fetch <片名> --year 2020` | 通过 Jackett 搜电影，按做种、画质、体积排序 |
 
 ## 配置
@@ -143,7 +150,7 @@ npm run movie -- organize
 | 变量 | 默认值 | 含义 |
 |---|---|---|
 | `NAS_SSH` | 部署时必填 | NAS 在 ssh config 里的主机名 |
-| `NAS_MOVIE_ARCHIVE` | `~/Media/JAV` | 平铺片库，也是迅雷默认下载目录 |
+| `NAS_MOVIE_ARCHIVE` | `~/Media/JAV` | 平铺片库，也是默认下载目录 |
 | `NAS_MOVIE_SHOWS_ROOT` | `~/Media/Shows` | 剧集和番剧库 |
 | `NAS_MOVIE_TRASH` | `~/.nas-movie-trash` | 整理时挪走的残留文件 |
 | `NAS_MOVIE_BOOKMARKS_HOST` | 空（本机） | 书签所在电脑的 ssh 主机名 |
@@ -173,14 +180,14 @@ sukebei 的结果只保留名字里有完整番号的（`ABC-123` 不会误中 `
 
 ### 没有 NAS 能用吗？
 
-CLI 在任何装了 Node.js 的机器上都能跑，但下载依赖 NAS 版迅雷的接口，定时任务是 systemd 用户服务。片库整理和影片墙对任意目录都能用。
+能。没有 `config.json` 时，CLI 用所在电脑上的 aria2 下载，片库整理和影片墙对任意目录都能用。只有部署脚本和 systemd 定时任务是 NAS 专用的；在笔记本上需要时跑一次 `teachers auto --apply`，或者自己用系统计划任务定时。macOS 实测过；Linux 应当一样；Windows 未测试。
 
 ### 和元数据刮削工具有什么不同？
 
 | | 元数据刮削工具 | StudyMovie |
 |---|---|---|
 | 发现关注演员的新作 | 否 | 是，每天 |
-| 发起下载 | 否 | 是，通过迅雷 |
+| 发起下载 | 否 | 是，aria2 或迅雷 |
 | 改名成平铺片库 | 是 | 是，写全共演者 |
 | 给媒体服务器写 NFO 和海报 | 通常会 | 否，文件名就是元数据 |
 | 在 NAS 上无人值守运行 | 少见 | 是，systemd 定时任务 |
@@ -206,7 +213,7 @@ deploy-nas.sh 构建、上传、安装定时任务、dry-run
 
 ```bash
 npm run check   # tsc --noEmit
-npm test        # node --test，77 项
+npm test        # node --test，81 项
 npm run build   # 生成给 NAS 用的 dist/
 ```
 

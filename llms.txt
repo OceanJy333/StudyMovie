@@ -1,8 +1,9 @@
 # StudyMovie
 
-> Self-hosted TypeScript CLI that turns a home NAS into an automatic JAV library: follows bookmarked actresses on JavDB, sends the best magnet to the NAS's Thunder (迅雷) downloader, renames finished files to "YYYY-MM-DD CODE Actress.ext" and serves a LAN library wall. Also subscribes to TV series and anime. MIT licensed.
+> Self-hosted TypeScript CLI for an automatic JAV library: follows bookmarked actresses on JavDB, downloads the best magnet with aria2 on your own computer or with Thunder (迅雷) on a NAS, renames finished files to "YYYY-MM-DD CODE Actress.ext" and serves a LAN library wall. Also subscribes to TV series and anime. MIT licensed.
 
-- Runs on: Linux NAS with systemd user services (tested on UGREEN UGOS), Node.js 18+, Thunder NAS API on 127.0.0.1:5050.
+- Runs on: any computer with Node.js 18+ and aria2 (macOS, Linux, Windows), or a Linux NAS with systemd user services and the Thunder NAS API (tested on UGREEN UGOS).
+- Download backends: aria2 JSON-RPC (default without config; the CLI starts aria2c itself) or Thunder on a NAS over SSH.
 - Metadata: public JavDB app endpoints and javdb.com movie pages; no JavDB account.
 - Magnets: javdb.com movie page first, sukebei RSS fallback; queried from 1 day before release, daily for 14 days, then weekly.
 - Schedule: catalog 03:00, shows check 04:00, shows organize 08:00/20:00, organize 15:00, teachers auto 18:00.
@@ -18,4 +19,4 @@
 - [README (English)](README.md): features, quick start, commands, configuration, FAQ
 - [README (简体中文)](README.zh-CN.md)
 - [env.example](env.example): personal settings (library paths, bookmark source, proxy)
-- [config.example.json](config.example.json): NAS SSH and Thunder connection
+- [config.example.json](config.example.json): NAS SSH and Thunder connection (not needed for aria2)

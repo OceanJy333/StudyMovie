@@ -13,8 +13,7 @@ import { defaultArchiveRoot, splitActresses, unknownActress } from "../library/n
 import { LibraryScanner } from "../library/scan.js";
 import { bestMagnet, jdbCover, usableMagnets } from "../javdb/index.js";
 import { Javdb } from "../javdb/client.js";
-import { Thunder } from "../thunder.js";
-import { ensureThunderAuth } from "../thunder-auth.js";
+import { downloader } from "../downloader.js";
 import { contentType, parseRange, safeMediaPath, safeNestedMediaPath } from "./media.js";
 import { renderShowDetail, renderShows } from "./shows.js";
 import { readShows, showsPath } from "../shows/config.js";
@@ -115,7 +114,7 @@ export async function startWeb(options) {
     const scanner = new LibraryScanner();
     const javdb = new Javdb();
     const covers = new HttpClient({ label: 'JavDB 封面', concurrency: 6, timeoutMs: 20_000 });
-    const thunder = new Thunder(options.config);
+    const backend = downloader(options.config);
     let meta = null;
     let catalog = null;
     let submitted = null;
@@ -266,8 +265,8 @@ export async function startWeb(options) {
         const picked = bestMagnet(magnets);
         if (!picked?.hash)
             throw new ApiError(409, '这部没有可用磁力');
-        await ensureThunderAuth(options.config);
-        const result = await thunder.download(`magnet:?xt=urn:btih:${picked.hash}`, options.root);
+        await backend.ready();
+        const result = await backend.download(`magnet:?xt=urn:btih:${picked.hash}`, options.root);
         done.add(number);
         await saveSubmitted(done);
         return { number, action: result.action, taskId: result.task?.id, phase: result.task?.phase, name: picked.name ?? null };

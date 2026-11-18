@@ -1,8 +1,8 @@
 import { stderrNote } from "../core/log.js";
 import { nowIso } from "../core/time.js";
 import { Jackett } from "../jackett.js";
-import { Thunder, assertDownloadPath } from "../thunder.js";
-import { ensureThunderAuth } from "../thunder-auth.js";
+import { downloader } from "../downloader.js";
+import { assertDownloadPath } from "../core/paths.js";
 import { readShows, showsPath } from "./config.js";
 import { scanShows } from "./library.js";
 import { episodeKey } from "./parse.js";
@@ -19,9 +19,8 @@ export async function checkShows(options) {
     const notes = [];
     let groupsSeen = 0, fresh = 0, submitted = 0, remaining = 0, errors = 0;
     const startedAt = nowIso();
-    const thunder = options.apply ? new Thunder(options.config) : null;
-    if (thunder)
-        await ensureThunderAuth(options.config);
+    const backend = options.apply ? downloader(options.config) : null;
+    await backend?.ready();
     for (const subscription of options.shows.subscriptions.filter(item => item.enabled)) {
         let groups;
         try {
@@ -61,7 +60,7 @@ export async function checkShows(options) {
                 continue;
             }
             try {
-                const result = await thunder.download(group.magnet, options.shows.root, false);
+                const result = await backend.download(group.magnet, options.shows.root, false);
                 const at = nowIso();
                 for (const episode of group.episodes) {
                     state.seen[episodeKey(subscription.name, group.season, episode)] = {
