@@ -1,0 +1,21 @@
+# nas-movie-cli
+
+> Self-hosted TypeScript CLI that turns a home NAS into an automatic JAV library: follows bookmarked actresses on JavDB, sends the best magnet to the NAS's Thunder (迅雷) downloader, renames finished files to "YYYY-MM-DD CODE Actress.ext" and serves a LAN library wall. Also subscribes to TV series and anime. MIT licensed.
+
+- Runs on: Linux NAS with systemd user services (tested on UGREEN UGOS), Node.js 18+, Thunder NAS API on 127.0.0.1:5050.
+- Metadata: public JavDB app endpoints and javdb.com movie pages; no JavDB account.
+- Magnets: javdb.com movie page first, sukebei RSS fallback; queried from 1 day before release, daily for 14 days, then weekly.
+- Schedule: catalog 03:00, shows check 04:00, shows organize 08:00/20:00, organize 15:00, teachers auto 18:00.
+- Naming: all female cast, up to 4 names joined with 、 then 等; unknown names re-checked from cache every run.
+- Failure policy: any source or submission failure exits with code 1.
+
+- Agent install: `npm install -g github:OceanJy333/nas-movie-cli`, or `npx skills add OceanJy333/nas-movie-cli` for the skill; every command prints JSON and needs `--apply` to change anything.
+
+## Docs
+
+- [Agent skill](skills/nas-movie/SKILL.md): install, configure and command mapping for AI agents
+
+- [README (English)](README.md): features, quick start, commands, configuration, FAQ
+- [README (简体中文)](README.zh-CN.md)
+- [env.example](env.example): personal settings (library paths, bookmark source, proxy)
+- [config.example.json](config.example.json): NAS SSH and Thunder connection

@@ -1,0 +1,49 @@
+{
+  "name": "nas-movie-cli",
+  "version": "1.0.0",
+  "description": "Self-hosted JAV auto-downloader and library organizer for a home NAS: follows your favorite actresses on JavDB, pulls new releases into Thunder, renames files to \"date code actress\" and serves a LAN library wall.",
+  "keywords": [
+    "jav",
+    "javdb",
+    "nas",
+    "thunder",
+    "xunlei",
+    "auto-download",
+    "media-library",
+    "organizer",
+    "systemd",
+    "sukebei",
+    "ugreen",
+    "self-hosted",
+    "cli",
+    "typescript"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OceanJy333/nas-movie-cli.git"
+  },
+  "homepage": "https://github.com/OceanJy333/nas-movie-cli#readme",
+  "engines": {
+    "node": ">=18"
+  },
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "movie": "node --experimental-strip-types src/cli.ts",
+    "check": "tsc --noEmit",
+    "test": "node --experimental-strip-types --test src/*.test.ts",
+    "build": "rm -rf dist && tsc -p tsconfig.build.json",
+    "serve-nas": "node dist/cli.js"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.8.0"
+  },
+  "dependencies": {
+    "cheerio": "^1.2.0"
+  },
+  "bin": {
+    "nas-movie": "dist/cli.js"
+  }
+}

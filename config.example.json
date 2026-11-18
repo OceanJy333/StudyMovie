@@ -1,0 +1,17 @@
+{
+  "ssh": {
+    "host": "nas.local",
+    "port": 22,
+    "user": "me",
+    "identityFile": "~/.ssh/id_ed25519"
+  },
+  "thunder": {
+    "baseUrl": "http://127.0.0.1:5050/",
+    "headers": { "content-type": "application/json" },
+    "space": "device_id#<your-thunder-device-id>",
+    "downloadDir": "/home/me/Media/"
+  },
+  "gying": {
+    "baseUrl": "https://example.invalid/"
+  }
+}

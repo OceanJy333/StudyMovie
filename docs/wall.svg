@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 948 516" width="948" height="516" role="img" aria-labelledby="wall-title wall-desc">
+<title id="wall-title">Library wall illustration</title>
+<desc id="wall-desc">A browser page with a search box, filter chips and a grid of cover placeholders marked local or downloadable.</desc>
+<defs>
+  <marker id="walla" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="muted"/></marker>
+  <marker id="wallb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="acc"/></marker>
+</defs>
+<style>
+  .bg{fill:#f5f5f4}.card{fill:#ffffff}.box{fill:#ffffff;stroke:#2d3142;stroke-opacity:.32}
+  .focal{fill:#fbeee8;stroke:#bf4520;stroke-width:1.5}.dim{fill:#ecebe8;stroke:#2d3142;stroke-opacity:.18}
+  .ink{fill:#2d3142}.muted{fill:#5b5f6b}.soft{fill:#7c808c}.acc{fill:#bf4520}
+  .line{stroke:#5b5f6b;stroke-width:1.4;fill:none}.aline{stroke:#bf4520;stroke-width:1.8;fill:none}
+  .dash{stroke-dasharray:5 4}.rule{stroke:#2d3142;stroke-opacity:.16;fill:none}
+  .tag{fill:#2d3142;fill-opacity:.07}.tagacc{fill:#bf4520;fill-opacity:.14}.mask{fill:#f5f5f4}
+  .cover{fill:#dcdad5}.cover2{fill:#c9c6bf}.ok{fill:#2f7d4f}
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Noto Sans CJK SC",Helvetica,Arial,sans-serif}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .t{font-size:22px;font-weight:600}.n{font-size:15px;font-weight:600}.s{font-size:11.5px}.e{font-size:10.5px;letter-spacing:.08em}
+  @media (prefers-color-scheme:dark){
+    .bg,.mask{fill:#1d1f24}.card{fill:#262930}.box{fill:#262930;stroke:#e9e7e2;stroke-opacity:.30}
+    .focal{fill:#3a2620;stroke:#ea7a52}.dim{fill:#2c2f36;stroke:#e9e7e2;stroke-opacity:.16}
+    .ink{fill:#f2f0ea}.muted{fill:#b9bcc5}.soft{fill:#9599a5}.acc{fill:#ea7a52}
+    .line{stroke:#b9bcc5}.aline{stroke:#ea7a52}.rule{stroke:#e9e7e2}.tag{fill:#e9e7e2}.tagacc{fill:#ea7a52}
+    .cover{fill:#3a3d45}.cover2{fill:#464a53}.ok{fill:#5fbf85}
+  }
+</style>
+<rect class="bg" width="948" height="516" rx="12"/>
+<text class="mono e soft" x="32" y="40">LAN WEB</text><text class="t ink" x="32" y="70">The library wall (illustration)</text>
+<rect class="card" x="32" y="84" width="884" height="404" rx="10" style="stroke:#7c808c;stroke-opacity:.35"/>
+<circle cx="54" cy="104" r="5" class="cover2"/><circle cx="72" cy="104" r="5" class="cover2"/><circle cx="90" cy="104" r="5" class="cover2"/>
+<rect class="dim" x="120" y="94" width="300" height="20" rx="10"/><text class="mono s soft" x="134" y="108">nas.local:8850</text>
+<line class="rule" x1="32" y1="124" x2="916" y2="124"/>
+<rect class="dim" x="52" y="140" width="260" height="30" rx="15"/><text class="s soft" x="70" y="159">Search code, actress, title…</text>
+<rect class="focal" x="332" y="140" width="49.6" height="30" rx="15"/><text class="s acc" x="356.8" y="159" text-anchor="middle">All</text>
+<rect class="dim" x="389.6" y="140" width="100.0" height="30" rx="15"/><text class="s muted" x="439.6" y="159" text-anchor="middle">Downloaded</text>
+<rect class="dim" x="497.6" y="140" width="78.4" height="30" rx="15"/><text class="s muted" x="536.8000000000001" y="159" text-anchor="middle">Missing</text>
+<rect class="dim" x="584.0" y="140" width="92.8" height="30" rx="15"/><text class="s muted" x="630.4" y="159" text-anchor="middle">Actress A</text>
+<rect class="dim" x="684.8" y="140" width="92.8" height="30" rx="15"/><text class="s muted" x="731.1999999999999" y="159" text-anchor="middle">Actress B</text>
+<rect class="dim" x="785.5999999999999" y="140" width="92.8" height="30" rx="15"/><text class="s muted" x="831.9999999999999" y="159" text-anchor="middle">Actress C</text>
+<rect class="cover2" x="52" y="188" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="52" y="306">ABC-123</text><text class="s muted" x="52" y="322">Actress A</text>
+<rect class="card" x="156" y="196" width="44" height="18" rx="9"/><text class="mono e ok" x="178" y="209" text-anchor="middle">Local</text>
+<rect class="cover" x="224" y="188" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="224" y="306">ABC-118</text><text class="s muted" x="224" y="322">Actress B</text>
+<rect class="card" x="328" y="196" width="44" height="18" rx="9"/><text class="mono e ok" x="350" y="209" text-anchor="middle">Local</text>
+<rect class="cover2" x="396" y="188" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="396" y="306">XYZ-045</text><text class="s muted" x="396" y="322">Actress C</text>
+<rect class="card" x="500" y="196" width="44" height="18" rx="9"/><text class="mono e acc" x="522" y="209" text-anchor="middle">Get</text>
+<rect class="cover" x="568" y="188" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="568" y="306">DEF-210</text><text class="s muted" x="568" y="322">Actress A</text>
+<rect class="card" x="672" y="196" width="44" height="18" rx="9"/><text class="mono e ok" x="694" y="209" text-anchor="middle">Local</text>
+<rect class="cover2" x="740" y="188" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="740" y="306">ABC-101</text><text class="s muted" x="740" y="322">Actress B</text>
+<rect class="card" x="844" y="196" width="44" height="18" rx="9"/><text class="mono e ok" x="866" y="209" text-anchor="middle">Local</text>
+<rect class="cover" x="52" y="334" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="52" y="452">XYZ-031</text><text class="s muted" x="52" y="468">Actress C</text>
+<rect class="card" x="156" y="342" width="44" height="18" rx="9"/><text class="mono e ok" x="178" y="355" text-anchor="middle">Local</text>
+<rect class="cover2" x="224" y="334" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="224" y="452">GHI-007</text><text class="s muted" x="224" y="468">Actress A</text>
+<rect class="card" x="328" y="342" width="44" height="18" rx="9"/><text class="mono e ok" x="350" y="355" text-anchor="middle">Local</text>
+<rect class="cover" x="396" y="334" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="396" y="452">DEF-188</text><text class="s muted" x="396" y="468">Actress B</text>
+<rect class="card" x="500" y="342" width="44" height="18" rx="9"/><text class="mono e acc" x="522" y="355" text-anchor="middle">Get</text>
+<rect class="cover2" x="568" y="334" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="568" y="452">ABC-097</text><text class="s muted" x="568" y="468">Actress C</text>
+<rect class="card" x="672" y="342" width="44" height="18" rx="9"/><text class="mono e ok" x="694" y="355" text-anchor="middle">Local</text>
+<rect class="cover" x="740" y="334" width="156" height="98" rx="6"/>
+<text class="mono s ink" x="740" y="452">XYZ-022</text><text class="s muted" x="740" y="468">Actress A</text>
+<rect class="card" x="844" y="342" width="44" height="18" rx="9"/><text class="mono e acc" x="866" y="355" text-anchor="middle">Get</text>
+</svg>
