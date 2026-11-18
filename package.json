@@ -1,7 +1,7 @@
 {
   "name": "studymovie",
   "version": "1.0.0",
-  "description": "Self-hosted JAV auto-downloader and library organizer for a home NAS: follows your favorite actresses on JavDB, pulls new releases into Thunder, renames files to \"date code actress\" and serves a LAN library wall.",
+  "description": "JavDB 演员新作自动下载与番号整理 CLI / Self-hosted JAV auto-downloader and library organizer: follows actresses on JavDB, downloads with aria2 on your computer or Thunder (迅雷) on a NAS, renames to \"date code actress\", LAN library wall.",
   "keywords": [
     "jav",
     "javdb",
@@ -16,7 +16,13 @@
     "ugreen",
     "self-hosted",
     "cli",
-    "typescript"
+    "typescript",
+    "aria2",
+    "bittorrent",
+    "magnet",
+    "番号",
+    "迅雷",
+    "jav-downloader"
   ],
   "license": "MIT",
   "repository": {

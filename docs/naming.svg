@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 280" width="1140" height="280" role="img" aria-labelledby="naming-title naming-desc">
-<title id="naming-title">How organize names a file</title>
-<desc id="naming-desc">A download name is parsed into a code, matched to a JavDB id, enriched with the female cast from the movie page and renamed to date, code and actresses.</desc>
+<title id="naming-title">整理怎么给文件命名</title>
+<desc id="naming-desc">下载文件名先解析出番号，再对应到 JavDB id，从影片页取女演员，最后改名成「发行日期 番号 演员」。</desc>
 <defs>
   <marker id="naminga" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="muted"/></marker>
   <marker id="namingb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="acc"/></marker>
@@ -25,41 +25,41 @@
   }
 </style>
 <rect class="bg" width="1140" height="280" rx="12"/>
-<text class="mono e soft" x="32" y="40">ORGANIZE</text><text class="t ink" x="32" y="70">From a messy download to a library name</text>
+<text class="mono e soft" x="32" y="40">片库整理</text><text class="t ink" x="32" y="70">从杂乱的下载名到统一的片库文件名</text>
 <path class="line" d="M200 150 H238" marker-end="url(#naminga)"/>
 <path class="line" d="M412 150 H450" marker-end="url(#naminga)"/>
 <path class="line" d="M624 150 H662" marker-end="url(#naminga)"/>
 <path class="aline" d="M836 150 H874" marker-end="url(#namingb)"/>
 <rect class="box" x="32" y="112" width="168" height="94" rx="6"/>
-<rect class="tag" x="44" y="122" width="43" height="16" rx="2"/>
-<text class="mono e muted" x="48" y="134">INPUT</text>
-<text class="n ink" x="44" y="158">Download</text>
+<rect class="tag" x="44" y="122" width="31.0" height="16" rx="2"/>
+<text class="mono e muted" x="48" y="134">输入</text>
+<text class="n ink" x="44" y="158">下载文件</text>
 <text class="mono s soft" x="44" y="176">hhd800.com@</text>
 <text class="mono s soft" x="44" y="192">ABC123ch.mp4</text>
 <rect class="box" x="244" y="112" width="168" height="94" rx="6"/>
-<rect class="tag" x="256" y="122" width="43" height="16" rx="2"/>
-<text class="mono e muted" x="260" y="134">PARSE</text>
-<text class="n ink" x="256" y="158">Code</text>
+<rect class="tag" x="256" y="122" width="31.0" height="16" rx="2"/>
+<text class="mono e muted" x="260" y="134">解析</text>
+<text class="n ink" x="256" y="158">番号</text>
 <text class="mono s soft" x="256" y="176">ABC-123</text>
-<text class="mono s soft" x="256" y="192">ranked candidates</text>
+<text class="mono s soft" x="256" y="192">候选排序</text>
 <rect class="box" x="456" y="112" width="168" height="94" rx="6"/>
-<rect class="tag" x="468" y="122" width="50" height="16" rx="2"/>
-<text class="mono e muted" x="472" y="134">LOOKUP</text>
+<rect class="tag" x="468" y="122" width="31.0" height="16" rx="2"/>
+<text class="mono e muted" x="472" y="134">查找</text>
 <text class="n ink" x="468" y="158">JavDB id</text>
-<text class="mono s soft" x="468" y="176">catalog cache or</text>
-<text class="mono s soft" x="468" y="192">page-jump search</text>
+<text class="mono s soft" x="468" y="176">作品目录缓存</text>
+<text class="mono s soft" x="468" y="192">或按番号跳页查</text>
 <rect class="box" x="668" y="112" width="168" height="94" rx="6"/>
-<rect class="tag" x="680" y="122" width="78" height="16" rx="2"/>
-<text class="mono e muted" x="684" y="134">MOVIE PAGE</text>
-<text class="n ink" x="680" y="158">Actresses</text>
-<text class="mono s soft" x="680" y="176">actor-female only</text>
-<text class="mono s soft" x="680" y="192">main star first</text>
+<rect class="tag" x="680" y="122" width="41.5" height="16" rx="2"/>
+<text class="mono e muted" x="684" y="134">影片页</text>
+<text class="n ink" x="680" y="158">女演员</text>
+<text class="mono s soft" x="680" y="176">只取女演员</text>
+<text class="mono s soft" x="680" y="192">主演排第一</text>
 <rect class="focal" x="880" y="112" width="228" height="94" rx="6"/>
-<rect class="tagacc" x="892" y="122" width="50" height="16" rx="2"/>
-<text class="mono e acc" x="896" y="134">OUTPUT</text>
-<text class="n ink" x="892" y="158">Library file</text>
+<rect class="tagacc" x="892" y="122" width="31.0" height="16" rx="2"/>
+<text class="mono e acc" x="896" y="134">输出</text>
+<text class="n ink" x="892" y="158">片库文件</text>
 <text class="mono s soft" x="892" y="176">2026-09-10 ABC-123</text>
-<text class="mono s soft" x="892" y="192">Actress A、Actress B.mp4</text>
+<text class="mono s soft" x="892" y="192">演员甲、演员乙.mp4</text>
 <line class="rule" x1="32" y1="232" x2="1108" y2="232"/>
-<text class="mono s soft" x="32" y="258">Up to 4 names, then 等. Unknown or undated files are re-checked every run; renames are logged for rollback.</text>
+<text class="mono s soft" x="32" y="258">最多写 4 位演员，再多加「等」。未知演员或缺日期的文件每轮重查；每次改名都记账，可回滚。</text>
 </svg>

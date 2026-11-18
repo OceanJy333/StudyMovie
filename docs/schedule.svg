@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 948 282" width="948" height="282" role="img" aria-labelledby="schedule-title schedule-desc">
-<title id="schedule-title">StudyMovie daily schedule</title>
-<desc id="schedule-desc">Timers run catalog at 03:00, show checks at 04:00, show archiving at 08:00 and 20:00, library organizing at 15:00 and teacher downloads at 18:00.</desc>
+<title id="schedule-title">StudyMovie 每日定时任务</title>
+<desc id="schedule-desc">03:00 更新作品目录，04:00 查剧集新集，08:00 和 20:00 剧集归档，15:00 整理片库，18:00 下载关注演员的新作。</desc>
 <defs>
   <marker id="schedulea" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="muted"/></marker>
   <marker id="scheduleb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="acc"/></marker>
@@ -25,7 +25,7 @@
   }
 </style>
 <rect class="bg" width="948" height="282" rx="12"/>
-<text class="mono e soft" x="32" y="40">DAILY TIMERS</text><text class="t ink" x="32" y="70">One NAS, five systemd timers</text>
+<text class="mono e soft" x="32" y="40">每日定时任务</text><text class="t ink" x="32" y="70">NAS 上：5 个 systemd 定时任务</text>
 <line class="rule" x1="48" y1="150" x2="900" y2="150" style="stroke-opacity:.5"/>
 <line class="rule" x1="48.0" y1="146" x2="48.0" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="48.0" y="172" text-anchor="middle">00:00</text>
 <line class="rule" x1="154.5" y1="146" x2="154.5" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="154.5" y="172" text-anchor="middle">03:00</text>
@@ -35,23 +35,23 @@
 <line class="rule" x1="687.0" y1="146" x2="687.0" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="687.0" y="172" text-anchor="middle">18:00</text>
 <line class="rule" x1="793.5" y1="146" x2="793.5" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="793.5" y="172" text-anchor="middle">21:00</text>
 <line class="rule" x1="900.0" y1="146" x2="900.0" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="900.0" y="172" text-anchor="middle">24:00</text>
-<line class="line" x1="154.5" y1="150" x2="154.5" y2="112"/>
+<line class="line" x1="154.5" y1="150" x2="154.5" y2="122"/>
 <circle cx="154.5" cy="150" r="4.5" class="ink"/>
-<text class="n ink" x="154.5" y="98" text-anchor="middle">catalog</text><text class="mono s soft" x="154.5" y="114" text-anchor="middle">full filmographies</text>
+<text class="n ink" x="154.5" y="98" text-anchor="middle">作品目录</text><text class="mono s soft" x="154.5" y="114" text-anchor="middle">catalog</text>
 <line class="line" x1="190.0" y1="150" x2="190.0" y2="188"/>
 <circle cx="190.0" cy="150" r="4.5" class="ink"/>
-<text class="n ink" x="190.0" y="206" text-anchor="middle">shows check</text><text class="mono s soft" x="190.0" y="222" text-anchor="middle">new TV episodes</text>
-<line class="line" x1="332.0" y1="150" x2="332.0" y2="112"/>
+<text class="n ink" x="190.0" y="206" text-anchor="middle">查剧集新集</text><text class="mono s soft" x="190.0" y="222" text-anchor="middle">shows check</text>
+<line class="line" x1="332.0" y1="150" x2="332.0" y2="122"/>
 <circle cx="332.0" cy="150" r="4.5" class="ink"/>
-<text class="n ink" x="332.0" y="98" text-anchor="middle">shows organize</text><text class="mono s soft" x="332.0" y="114" text-anchor="middle">Show/Season 01</text>
+<text class="n ink" x="332.0" y="98" text-anchor="middle">剧集归档</text><text class="mono s soft" x="332.0" y="114" text-anchor="middle">shows organize</text>
 <line class="line" x1="580.5" y1="150" x2="580.5" y2="188"/>
 <circle cx="580.5" cy="150" r="4.5" class="ink"/>
-<text class="n ink" x="580.5" y="206" text-anchor="middle">organize</text><text class="mono s soft" x="580.5" y="222" text-anchor="middle">rename + flatten</text>
-<line class="aline" x1="687.0" y1="150" x2="687.0" y2="112"/>
+<text class="n ink" x="580.5" y="206" text-anchor="middle">片库整理</text><text class="mono s soft" x="580.5" y="222" text-anchor="middle">organize</text>
+<line class="aline" x1="687.0" y1="150" x2="687.0" y2="122"/>
 <circle cx="687.0" cy="150" r="6" class="acc"/>
-<text class="n acc" x="687.0" y="98" text-anchor="middle">teachers auto</text><text class="mono s soft" x="687.0" y="114" text-anchor="middle">download new works</text>
+<text class="n acc" x="687.0" y="98" text-anchor="middle">下载新作</text><text class="mono s soft" x="687.0" y="114" text-anchor="middle">teachers auto</text>
 <line class="line" x1="758.0" y1="150" x2="758.0" y2="188"/>
 <circle cx="758.0" cy="150" r="4.5" class="ink"/>
-<text class="n ink" x="758.0" y="206" text-anchor="middle">shows organize</text><text class="mono s soft" x="758.0" y="222" text-anchor="middle">second pass</text>
-<text class="mono s soft" x="32" y="254">Plus a resident library wall on :8850.</text>
+<text class="n ink" x="758.0" y="206" text-anchor="middle">剧集归档</text><text class="mono s soft" x="758.0" y="222" text-anchor="middle">shows organize</text>
+<text class="mono s soft" x="32" y="254">另有常驻的影片墙（:8850）。在自己电脑上，需要时手动跑同样的命令。</text>
 </svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1140 280" width="1140" height="280" role="img" aria-labelledby="naming-title naming-desc">
+<title id="naming-title">How organize names a file</title>
+<desc id="naming-desc">A download name is parsed into a code, matched to a JavDB id, enriched with the female cast from the movie page and renamed to date, code and actresses.</desc>
+<defs>
+  <marker id="naminga" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="muted"/></marker>
+  <marker id="namingb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="acc"/></marker>
+</defs>
+<style>
+  .bg{fill:#f5f5f4}.card{fill:#ffffff}.box{fill:#ffffff;stroke:#2d3142;stroke-opacity:.32}
+  .focal{fill:#fbeee8;stroke:#bf4520;stroke-width:1.5}.dim{fill:#ecebe8;stroke:#2d3142;stroke-opacity:.18}
+  .ink{fill:#2d3142}.muted{fill:#5b5f6b}.soft{fill:#7c808c}.acc{fill:#bf4520}
+  .line{stroke:#5b5f6b;stroke-width:1.4;fill:none}.aline{stroke:#bf4520;stroke-width:1.8;fill:none}
+  .dash{stroke-dasharray:5 4}.rule{stroke:#2d3142;stroke-opacity:.16;fill:none}
+  .tag{fill:#2d3142;fill-opacity:.07}.tagacc{fill:#bf4520;fill-opacity:.14}.mask{fill:#f5f5f4}
+  .cover{fill:#dcdad5}.cover2{fill:#c9c6bf}.ok{fill:#2f7d4f}
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Noto Sans CJK SC",Helvetica,Arial,sans-serif}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .t{font-size:22px;font-weight:600}.n{font-size:15px;font-weight:600}.s{font-size:11.5px}.e{font-size:10.5px;letter-spacing:.08em}
+  @media (prefers-color-scheme:dark){
+    .bg,.mask{fill:#1d1f24}.card{fill:#262930}.box{fill:#262930;stroke:#e9e7e2;stroke-opacity:.30}
+    .focal{fill:#3a2620;stroke:#ea7a52}.dim{fill:#2c2f36;stroke:#e9e7e2;stroke-opacity:.16}
+    .ink{fill:#f2f0ea}.muted{fill:#b9bcc5}.soft{fill:#9599a5}.acc{fill:#ea7a52}
+    .line{stroke:#b9bcc5}.aline{stroke:#ea7a52}.rule{stroke:#e9e7e2}.tag{fill:#e9e7e2}.tagacc{fill:#ea7a52}
+    .cover{fill:#3a3d45}.cover2{fill:#464a53}.ok{fill:#5fbf85}
+  }
+</style>
+<rect class="bg" width="1140" height="280" rx="12"/>
+<text class="mono e soft" x="32" y="40">ORGANIZE</text><text class="t ink" x="32" y="70">From a messy download to a library name</text>
+<path class="line" d="M200 150 H238" marker-end="url(#naminga)"/>
+<path class="line" d="M412 150 H450" marker-end="url(#naminga)"/>
+<path class="line" d="M624 150 H662" marker-end="url(#naminga)"/>
+<path class="aline" d="M836 150 H874" marker-end="url(#namingb)"/>
+<rect class="box" x="32" y="112" width="168" height="94" rx="6"/>
+<rect class="tag" x="44" y="122" width="42.55" height="16" rx="2"/>
+<text class="mono e muted" x="48" y="134">INPUT</text>
+<text class="n ink" x="44" y="158">Download</text>
+<text class="mono s soft" x="44" y="176">hhd800.com@</text>
+<text class="mono s soft" x="44" y="192">ABC123ch.mp4</text>
+<rect class="box" x="244" y="112" width="168" height="94" rx="6"/>
+<rect class="tag" x="256" y="122" width="42.55" height="16" rx="2"/>
+<text class="mono e muted" x="260" y="134">PARSE</text>
+<text class="n ink" x="256" y="158">Code</text>
+<text class="mono s soft" x="256" y="176">ABC-123</text>
+<text class="mono s soft" x="256" y="192">ranked candidates</text>
+<rect class="box" x="456" y="112" width="168" height="94" rx="6"/>
+<rect class="tag" x="468" y="122" width="49.06" height="16" rx="2"/>
+<text class="mono e muted" x="472" y="134">LOOKUP</text>
+<text class="n ink" x="468" y="158">JavDB id</text>
+<text class="mono s soft" x="468" y="176">catalog cache or</text>
+<text class="mono s soft" x="468" y="192">page-jump search</text>
+<rect class="box" x="668" y="112" width="168" height="94" rx="6"/>
+<rect class="tag" x="680" y="122" width="75.1" height="16" rx="2"/>
+<text class="mono e muted" x="684" y="134">MOVIE PAGE</text>
+<text class="n ink" x="680" y="158">Actresses</text>
+<text class="mono s soft" x="680" y="176">actor-female only</text>
+<text class="mono s soft" x="680" y="192">main star first</text>
+<rect class="focal" x="880" y="112" width="228" height="94" rx="6"/>
+<rect class="tagacc" x="892" y="122" width="49.06" height="16" rx="2"/>
+<text class="mono e acc" x="896" y="134">OUTPUT</text>
+<text class="n ink" x="892" y="158">Library file</text>
+<text class="mono s soft" x="892" y="176">2026-09-10 ABC-123</text>
+<text class="mono s soft" x="892" y="192">Actress A、Actress B.mp4</text>
+<line class="rule" x1="32" y1="232" x2="1108" y2="232"/>
+<text class="mono s soft" x="32" y="258">Up to 4 names, then 等. Unknown or undated files are re-checked every run; renames are logged for rollback.</text>
+</svg>

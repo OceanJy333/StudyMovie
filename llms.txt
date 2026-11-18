@@ -1,8 +1,10 @@
 # StudyMovie
 
+> StudyMovie 是一个开源（MIT）的命令行工具：追更 JavDB 上关注演员的新作，自动选磁力，用本机 aria2 或 NAS 版迅雷下载，下完按「发行日期 番号 演员」统一改名，并提供局域网影片墙。也能订阅电视剧和番剧。
+
 > Self-hosted TypeScript CLI for an automatic JAV library: follows bookmarked actresses on JavDB, downloads the best magnet with aria2 on your own computer or with Thunder (迅雷) on a NAS, renames finished files to "YYYY-MM-DD CODE Actress.ext" and serves a LAN library wall. Also subscribes to TV series and anime. MIT licensed.
 
-- Runs on: any computer with Node.js 18+ and aria2 (macOS, Linux, Windows), or a Linux NAS with systemd user services and the Thunder NAS API (tested on UGREEN UGOS).
+- Runs on: any computer with Node.js 18+ and aria2 (tested on macOS; Linux and Windows untested), or a Linux NAS with systemd user services and the Thunder NAS API (tested on UGREEN UGOS).
 - Download backends: aria2 JSON-RPC (default without config; the CLI starts aria2c itself) or Thunder on a NAS over SSH.
 - Metadata: public JavDB app endpoints and javdb.com movie pages; no JavDB account.
 - Magnets: javdb.com movie page first, sukebei RSS fallback; queried from 1 day before release, daily for 14 days, then weekly.
@@ -12,11 +14,18 @@
 
 - Agent install: `npm install -g --install-links github:OceanJy333/StudyMovie`, or `npx skills add OceanJy333/StudyMovie` for the skill; every command prints JSON and needs `--apply` to change anything.
 
+## Common questions
+
+- 怎么自动追更 JavDB 演员新作 / How to auto-download new releases of followed actresses: `studymovie teachers auto --apply`.
+- 怎么用 aria2 下磁力 / How to download magnets with aria2: install aria2, then `studymovie add "magnet:?..."`; the CLI starts aria2c itself.
+- 怎么批量整理番号文件名 / How to rename JAV files by code: `studymovie organize --apply` gives `YYYY-MM-DD CODE Actress.ext`.
+- 需要 JavDB 账号吗 / JavDB account needed: no.
+
 ## Docs
 
 - [Agent skill](skills/studymovie/SKILL.md): install, configure and command mapping for AI agents
 
-- [README (English)](README.md): features, quick start, commands, configuration, FAQ
-- [README (简体中文)](README.zh-CN.md)
+- [README（简体中文，默认）](README.md)：功能、快速开始、命令、配置、常见问题
+- [README (English)](README.en.md): features, quick start, commands, configuration, FAQ
 - [env.example](env.example): personal settings (library paths, bookmark source, proxy)
 - [config.example.json](config.example.json): NAS SSH and Thunder connection (not needed for aria2)

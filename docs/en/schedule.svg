@@ -1,0 +1,57 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 948 282" width="948" height="282" role="img" aria-labelledby="schedule-title schedule-desc">
+<title id="schedule-title">StudyMovie daily schedule</title>
+<desc id="schedule-desc">Timers run catalog at 03:00, show checks at 04:00, show archiving at 08:00 and 20:00, library organizing at 15:00 and teacher downloads at 18:00.</desc>
+<defs>
+  <marker id="schedulea" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="muted"/></marker>
+  <marker id="scheduleb" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M0 0 L10 5 L0 10 z" class="acc"/></marker>
+</defs>
+<style>
+  .bg{fill:#f5f5f4}.card{fill:#ffffff}.box{fill:#ffffff;stroke:#2d3142;stroke-opacity:.32}
+  .focal{fill:#fbeee8;stroke:#bf4520;stroke-width:1.5}.dim{fill:#ecebe8;stroke:#2d3142;stroke-opacity:.18}
+  .ink{fill:#2d3142}.muted{fill:#5b5f6b}.soft{fill:#7c808c}.acc{fill:#bf4520}
+  .line{stroke:#5b5f6b;stroke-width:1.4;fill:none}.aline{stroke:#bf4520;stroke-width:1.8;fill:none}
+  .dash{stroke-dasharray:5 4}.rule{stroke:#2d3142;stroke-opacity:.16;fill:none}
+  .tag{fill:#2d3142;fill-opacity:.07}.tagacc{fill:#bf4520;fill-opacity:.14}.mask{fill:#f5f5f4}
+  .cover{fill:#dcdad5}.cover2{fill:#c9c6bf}.ok{fill:#2f7d4f}
+  text{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Hiragino Sans","Noto Sans CJK SC",Helvetica,Arial,sans-serif}
+  .mono{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+  .t{font-size:22px;font-weight:600}.n{font-size:15px;font-weight:600}.s{font-size:11.5px}.e{font-size:10.5px;letter-spacing:.08em}
+  @media (prefers-color-scheme:dark){
+    .bg,.mask{fill:#1d1f24}.card{fill:#262930}.box{fill:#262930;stroke:#e9e7e2;stroke-opacity:.30}
+    .focal{fill:#3a2620;stroke:#ea7a52}.dim{fill:#2c2f36;stroke:#e9e7e2;stroke-opacity:.16}
+    .ink{fill:#f2f0ea}.muted{fill:#b9bcc5}.soft{fill:#9599a5}.acc{fill:#ea7a52}
+    .line{stroke:#b9bcc5}.aline{stroke:#ea7a52}.rule{stroke:#e9e7e2}.tag{fill:#e9e7e2}.tagacc{fill:#ea7a52}
+    .cover{fill:#3a3d45}.cover2{fill:#464a53}.ok{fill:#5fbf85}
+  }
+</style>
+<rect class="bg" width="948" height="282" rx="12"/>
+<text class="mono e soft" x="32" y="40">DAILY TIMERS</text><text class="t ink" x="32" y="70">On a NAS: five systemd timers</text>
+<line class="rule" x1="48" y1="150" x2="900" y2="150" style="stroke-opacity:.5"/>
+<line class="rule" x1="48.0" y1="146" x2="48.0" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="48.0" y="172" text-anchor="middle">00:00</text>
+<line class="rule" x1="154.5" y1="146" x2="154.5" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="154.5" y="172" text-anchor="middle">03:00</text>
+<line class="rule" x1="261.0" y1="146" x2="261.0" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="261.0" y="172" text-anchor="middle">06:00</text>
+<line class="rule" x1="367.5" y1="146" x2="367.5" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="367.5" y="172" text-anchor="middle">09:00</text>
+<line class="rule" x1="474.0" y1="146" x2="474.0" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="474.0" y="172" text-anchor="middle">12:00</text>
+<line class="rule" x1="687.0" y1="146" x2="687.0" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="687.0" y="172" text-anchor="middle">18:00</text>
+<line class="rule" x1="793.5" y1="146" x2="793.5" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="793.5" y="172" text-anchor="middle">21:00</text>
+<line class="rule" x1="900.0" y1="146" x2="900.0" y2="154" style="stroke-opacity:.5"/><text class="mono e soft" x="900.0" y="172" text-anchor="middle">24:00</text>
+<line class="line" x1="154.5" y1="150" x2="154.5" y2="122"/>
+<circle cx="154.5" cy="150" r="4.5" class="ink"/>
+<text class="n ink" x="154.5" y="98" text-anchor="middle">catalog</text><text class="mono s soft" x="154.5" y="114" text-anchor="middle">full filmographies</text>
+<line class="line" x1="190.0" y1="150" x2="190.0" y2="188"/>
+<circle cx="190.0" cy="150" r="4.5" class="ink"/>
+<text class="n ink" x="190.0" y="206" text-anchor="middle">shows check</text><text class="mono s soft" x="190.0" y="222" text-anchor="middle">new TV episodes</text>
+<line class="line" x1="332.0" y1="150" x2="332.0" y2="122"/>
+<circle cx="332.0" cy="150" r="4.5" class="ink"/>
+<text class="n ink" x="332.0" y="98" text-anchor="middle">shows organize</text><text class="mono s soft" x="332.0" y="114" text-anchor="middle">Show/Season 01</text>
+<line class="line" x1="580.5" y1="150" x2="580.5" y2="188"/>
+<circle cx="580.5" cy="150" r="4.5" class="ink"/>
+<text class="n ink" x="580.5" y="206" text-anchor="middle">organize</text><text class="mono s soft" x="580.5" y="222" text-anchor="middle">rename + flatten</text>
+<line class="aline" x1="687.0" y1="150" x2="687.0" y2="122"/>
+<circle cx="687.0" cy="150" r="6" class="acc"/>
+<text class="n acc" x="687.0" y="98" text-anchor="middle">teachers auto</text><text class="mono s soft" x="687.0" y="114" text-anchor="middle">download new works</text>
+<line class="line" x1="758.0" y1="150" x2="758.0" y2="188"/>
+<circle cx="758.0" cy="150" r="4.5" class="ink"/>
+<text class="n ink" x="758.0" y="206" text-anchor="middle">shows organize</text><text class="mono s soft" x="758.0" y="222" text-anchor="middle">second pass</text>
+<text class="mono s soft" x="32" y="254">Plus a resident library wall on :8850. On a laptop, run the same commands when you want.</text>
+</svg>
